@@ -7,7 +7,7 @@ import VueRouter from 'vue-router'
 //import views
 import Login from './views/Login.vue'
 import Index from './views/Index.vue'
-//import Register from './views/Register.vue'
+import Register from './views/Register.vue'
 import News from './views/News.vue'
 
 
@@ -19,7 +19,7 @@ Vue.use(VueRouter)
 const routes = [
 
     { name: 'index', path: '/', component: Index},
-//    { name: 'register', path: '/register', component: Register},
+    { name: 'register', path: '/register', component: Register},
     { name: 'login', path: '/login', component: Login},
     { name: 'news', path: '/news', component: News},
     
@@ -31,6 +31,10 @@ const router = new VueRouter({
   routes,
   //mode: 'history'
 })
+
+Vue.component('error-alert', require('./components/ErrorAlert.vue').default);
+Vue.component('registration-form', require('./components/RegistrationForm.vue').default);
+Vue.component('login-form', require('./components/LoginForm.vue').default);
 
 
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <br/><br/>
-        <h2>Login!</h2>
+        <login-form/>
         <br> <br>
         <center></center>
     </div>
