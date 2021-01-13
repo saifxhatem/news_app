@@ -38,10 +38,7 @@ class UserController extends Controller
           if (!isset($user)) {
             return response("User not found", 205);
           }
-  
-          
-          
-          return response("Login successful", 200);
+          return response($user, 200);
     }
 
     

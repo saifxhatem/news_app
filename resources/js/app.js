@@ -3,6 +3,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import VueRouter from 'vue-router'
+import VueSession from 'vue-session'
 
 //import views
 import Login from './views/Login.vue'
@@ -13,7 +14,7 @@ import News from './views/News.vue'
 
 
 Vue.use(VueRouter)
-
+Vue.use(VueSession)
 
 
 const routes = [

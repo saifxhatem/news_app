@@ -74,7 +74,11 @@ export default {
                     } else {
                         this.show_error = false;
                         this.errors = "";
-                        console.log("Success")
+                        this.$session.start()
+                        this.$session.set('user_id', result.data.id)
+                        console.log("session id: " + this.$session.id())
+                        console.log("session -> user_id: " + this.$session.get('user_id'))
+                        this.$router.push({ name: 'index'})
                     }
 
                 })
