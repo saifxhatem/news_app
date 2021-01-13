@@ -10,6 +10,7 @@ import Login from './views/Login.vue'
 import Index from './views/Index.vue'
 import Register from './views/Register.vue'
 import News from './views/News.vue'
+import Dash from './views/Dash.vue'
 
 
 
@@ -23,6 +24,7 @@ const routes = [
     { name: 'register', path: '/register', component: Register},
     { name: 'login', path: '/login', component: Login},
     { name: 'news', path: '/news', component: News},
+    { name: 'dash', path: '/dash', component: Dash},
     
 
   
@@ -36,6 +38,7 @@ const router = new VueRouter({
 Vue.component('error-alert', require('./components/ErrorAlert.vue').default);
 Vue.component('registration-form', require('./components/RegistrationForm.vue').default);
 Vue.component('login-form', require('./components/LoginForm.vue').default);
+
 
 
 

@@ -18,11 +18,13 @@
 <body>
 
     <div id= "app">
-        <router-link to="/login"><center>Login</center></router-link>
+    <center>
+        <router-link to="/">Home</router-link>
         
-    <router-view> 
-    
-    </router-view>
+        <router-link to="/login">Login</router-link>
+        <router-link to="/register">Register</router-link>
+    </center>
+    <router-view/> 
     
     </div>
     

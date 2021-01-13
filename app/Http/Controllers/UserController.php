@@ -4,21 +4,38 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mailer;
+
+
 
 class UserController extends Controller
 {
-    public function register(Request $request){
+    public function register(Request $request, Faker $faker){
         $validated = $request->validate([
             'user_name' => 'required|max:255',
-            'user_password' => 'required|max:255',
+            'user_dob' => 'required',
             'user_email' => 'required|max:255|unique:App\Models\User,email',
           ]);
           $user = new User;
           $user->name = $request->user_name;
-          $user->password = $request->user_password;
+          $user->password = $faker->password;
           $user->email = $request->user_email;
-  
+          $user->date_of_birth = $request->user_dob;
           $user->save();
+
+          $details = [
+            'title' => 'Registration Successful!',
+            'body' => 'Your randomly generated password is:',
+            'password' => $user->password,
+            'user_name' => $user->name
+        ];
+       
+        Mail::to($user->email)->send(new \App\Mail\Mailer($details));
+          
+
+
           return response("Registration successful", 200);
     }
 
