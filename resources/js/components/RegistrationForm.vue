@@ -14,15 +14,15 @@
                                     <label for="user-name-label">Full Name </label>
                                     <input type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_name_failed}" id="user-name" placeholder="Ex: John Smith" v-model="formData.user_name" />
                                 </div>
-    
+                                <br>
                                 <div class="form-group">
                                     <label for="new-address-label">Email</label>
                                     <input type="email" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_email_failed}" id="email" placeholder="Ex: 19 Hosny El Ashmawy" v-model="formData.user_email" />
                                 </div>
-    
+                                <br>
                                 <div class="form-group">
-                                    <label for="new-address-label">Password</label>
-                                    <input type="password" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_password_failed}" id="password" v-model="formData.user_password" />
+                                    <label for="new-address-label">Date of Birth</label>
+                                    <input type="date" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_dob_failed}" v-model="formData.user_dob">
                                 </div>
                                 <br>
                                 <button type="submit" class="btn btn-primary">Register</button>
@@ -44,16 +44,17 @@ export default {
         return {
             formData: {
                 user_name: null,
-                user_password: null,
-                user_email: null
+                user_email: null,
+                user_dob: null
             },
             validation_errors: {
                 user_name_failed: null,
-                user_password_failed: null,
                 user_email_failed: null,
+                user_dob_failed: null
             },
             show_error: false,
-            err_msg: ""
+            err_msg: "",
+            
         }
 
 
@@ -86,22 +87,23 @@ export default {
         validate_form() {
             //clear flags from previous runs
             this.clear_validation_flags();
+            
             if (this.formData.user_email === null || this.formData.user_email === '') {
                 this.show_error = true;
                 this.err_msg += "Email cannot be empty."
                 this.validation_errors.user_email_failed = true;
-            }
-            if (this.formData.user_password === null || this.formData.user_password === '') {
-                this.show_error = true;
-                this.err_msg += " Password cannot be empty."
-                this.validation_errors.user_password_failed = true;
             }
             if (this.formData.user_name === null || this.formData.user_name === '') {
                 this.show_error = true;
                 this.err_msg += " Name cannot be empty."
                 this.validation_errors.user_name_failed = true;
             }
-            if (!this.validation_errors.user_email_failed && !this.validation_errors.user_password_failed && !this.validation_errors.user_name_failed) {
+            if (this.formData.user_dob === null || this.formData.user_dob === '') {
+                this.show_error = true;
+                this.err_msg += " Date of birth cannot be empty."
+                this.validation_errors.user_dob_failed = true;
+            }
+            if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) {
                 this.show_error = false;
                 this.err_msg = "";
                 this.postData()
@@ -111,7 +113,7 @@ export default {
             this.err_msg = "";
             this.validation_errors.user_email_failed = null;
             this.validation_errors.user_name_failed = null;
-            this.validation_errors.user_password_failed = null;
+            this.validation_errors.user_dob_failed = null;
         },
     }
 }

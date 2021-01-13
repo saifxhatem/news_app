@@ -2156,13 +2156,13 @@ __webpack_require__.r(__webpack_exports__);
     return {
       formData: {
         user_name: null,
-        user_password: null,
-        user_email: null
+        user_email: null,
+        user_dob: null
       },
       validation_errors: {
         user_name_failed: null,
-        user_password_failed: null,
-        user_email_failed: null
+        user_email_failed: null,
+        user_dob_failed: null
       },
       show_error: false,
       err_msg: ""
@@ -2194,19 +2194,19 @@ __webpack_require__.r(__webpack_exports__);
         this.validation_errors.user_email_failed = true;
       }
 
-      if (this.formData.user_password === null || this.formData.user_password === '') {
-        this.show_error = true;
-        this.err_msg += " Password cannot be empty.";
-        this.validation_errors.user_password_failed = true;
-      }
-
       if (this.formData.user_name === null || this.formData.user_name === '') {
         this.show_error = true;
         this.err_msg += " Name cannot be empty.";
         this.validation_errors.user_name_failed = true;
       }
 
-      if (!this.validation_errors.user_email_failed && !this.validation_errors.user_password_failed && !this.validation_errors.user_name_failed) {
+      if (this.formData.user_dob === null || this.formData.user_dob === '') {
+        this.show_error = true;
+        this.err_msg += " Date of birth cannot be empty.";
+        this.validation_errors.user_dob_failed = true;
+      }
+
+      if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) {
         this.show_error = false;
         this.err_msg = "";
         this.postData();
@@ -2216,7 +2216,7 @@ __webpack_require__.r(__webpack_exports__);
       this.err_msg = "";
       this.validation_errors.user_email_failed = null;
       this.validation_errors.user_name_failed = null;
-      this.validation_errors.user_password_failed = null;
+      this.validation_errors.user_dob_failed = null;
     }
   }
 });
@@ -20290,6 +20290,8 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group" }, [
                       _c("label", { attrs: { for: "new-address-label" } }, [
                         _vm._v("Email")
@@ -20329,9 +20331,11 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group" }, [
                       _c("label", { attrs: { for: "new-address-label" } }, [
-                        _vm._v("Password")
+                        _vm._v("Date of Birth")
                       ]),
                       _vm._v(" "),
                       _c("input", {
@@ -20339,17 +20343,16 @@ var render = function() {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.formData.user_password,
-                            expression: "formData.user_password"
+                            value: _vm.formData.user_dob,
+                            expression: "formData.user_dob"
                           }
                         ],
                         staticClass: "form-control",
                         class: {
-                          "is-invalid":
-                            _vm.validation_errors.user_password_failed
+                          "is-invalid": _vm.validation_errors.user_dob_failed
                         },
-                        attrs: { type: "password", id: "password" },
-                        domProps: { value: _vm.formData.user_password },
+                        attrs: { type: "date" },
+                        domProps: { value: _vm.formData.user_dob },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
@@ -20357,7 +20360,7 @@ var render = function() {
                             }
                             _vm.$set(
                               _vm.formData,
-                              "user_password",
+                              "user_dob",
                               $event.target.value
                             )
                           }
