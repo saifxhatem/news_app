@@ -1,6 +1,11 @@
 <template>
     <div>
-        {{articles}}
+        <li v-for="(article,index) in articles" :key="index">
+        Source: {{article.source.name}} <br>
+        Title: {{article.title}} <br>
+        URL: {{article.url}}
+        
+        </li>
     </div>
 </template>
 
@@ -27,7 +32,7 @@ export default {
                 .then((response) => {
                     //check existence of data before assigning
                     if (response.data)
-                        this.articles = response.data;
+                        this.articles = response.data.articles;
                 })
                 .catch(function(error) {});
             //console.log("echo")
