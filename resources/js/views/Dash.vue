@@ -1,5 +1,8 @@
 <template>
-    
+    <div>
+    <h1>Dashboard </h1>
+    <center><h2> User ID:{{ $session.get('user_id') }} </h2></center>
+    </div>
 </template>
 
 
