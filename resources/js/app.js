@@ -11,6 +11,7 @@ import Index from './views/Index.vue'
 import Register from './views/Register.vue'
 import News from './views/News.vue'
 import Dash from './views/Dash.vue'
+import Logout from './views/Logout.vue'
 
 
 
@@ -25,6 +26,7 @@ const routes = [
     { name: 'login', path: '/login', component: Login},
     { name: 'news', path: '/news', component: News},
     { name: 'dash', path: '/dash', component: Dash},
+    { name: 'logout', path: '/logout', component: Logout},
     
 
   
