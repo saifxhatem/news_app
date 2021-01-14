@@ -20,7 +20,8 @@
                         </h3><img :src="article.urlToImage" :width="200" :height="100">
                         <dl>
                             <dt>
-    					Snippet from article: {{article.description}}
+    					Snippet from article: <br> 
+                        {{article.description}}
     				</dt>
                         </dl>
                     </div>
@@ -42,28 +43,11 @@ export default {
 
         }
     },
-    mounted() {
-
-        //this.load_articles();
-    },
-
     methods: {
         load_articles: function() {
-
-            // axios.get('http://newsapi.org/v2/top-headlines?' +
-            //         'country=us&' +
-            //         'apiKey=d68eedc60ffb475abe53a4d5d26acc0c')
-            //     .then((response) => {
-            //         //check existence of data before assigning
-            //         if (response.data)
-            //             this.articles = response.data.articles;
-            //     })
-            //     .catch(function(error) {});
-            
             axios.get('/load-news/' + this.country_code)
                 .then((response) => {
                     //check existence of data before assigning
-                    console.log(response.data)
                     if (response.data)
                         this.articles = response.data;
                 })
@@ -72,7 +56,6 @@ export default {
         },
         chosen_region: function(chosen_country_code)
         {
-            console.log("Chosen region: " + chosen_country_code)
             this.country_code = chosen_country_code;
             this.load_articles();
         }

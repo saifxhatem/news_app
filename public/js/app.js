@@ -2385,6 +2385,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2392,29 +2393,16 @@ __webpack_require__.r(__webpack_exports__);
       country_code: null
     };
   },
-  mounted: function mounted() {//this.load_articles();
-  },
   methods: {
     load_articles: function load_articles() {
       var _this = this;
 
-      // axios.get('http://newsapi.org/v2/top-headlines?' +
-      //         'country=us&' +
-      //         'apiKey=d68eedc60ffb475abe53a4d5d26acc0c')
-      //     .then((response) => {
-      //         //check existence of data before assigning
-      //         if (response.data)
-      //             this.articles = response.data.articles;
-      //     })
-      //     .catch(function(error) {});
       axios.get('/load-news/' + this.country_code).then(function (response) {
         //check existence of data before assigning
-        console.log(response.data);
         if (response.data) _this.articles = response.data;
       })["catch"](function (error) {});
     },
     chosen_region: function chosen_region(chosen_country_code) {
-      console.log("Chosen region: " + chosen_country_code);
       this.country_code = chosen_country_code;
       this.load_articles();
     }
@@ -21305,8 +21293,10 @@ var render = function() {
                     _vm._v(" "),
                     _c("dl", [
                       _c("dt", [
+                        _vm._v("\n\t\t\t\t\tSnippet from article: "),
+                        _c("br"),
                         _vm._v(
-                          "\n\t\t\t\t\tSnippet from article: " +
+                          " \n                    " +
                             _vm._s(article.description) +
                             "\n\t\t\t\t"
                         )
