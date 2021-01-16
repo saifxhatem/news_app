@@ -2168,7 +2168,8 @@ __webpack_require__.r(__webpack_exports__);
         user_dob_failed: null
       },
       show_error: false,
-      err_msg: ""
+      err_msg: "",
+      date_today_string: null
     };
   },
   methods: {
@@ -2176,50 +2177,74 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.post("register", this.formData).then(function (result) {
-        console.log("Success"); //this.$router.push({ name: 'home', params: { user_id: this.user_id } })
+        alert("You have been registered on News App. Please check your email for your password.");
+
+        _this.$router.push({
+          name: 'index'
+        });
       })["catch"](function (error) {
         _this.show_error = true;
-        console.log(_this.validation_errors);
-        console.log(_this.formData);
+        var errors = error.response.data.errors;
 
-        if (error.response.status == 422) {
-          _this.err_msg = "Shit happened";
+        for (error in errors) {
+          console.log(error);
+          if (error = "user_email") _this.err_msg = "Email is already in use.";
         }
       });
     },
     validate_form: function validate_form() {
-      //clear flags from previous runs
-      this.clear_validation_flags();
+      this.clear_validation_flags(); //clear flags from previous runs
+
+      this.date_setter(); //get today's date
+      //validate
 
       if (this.formData.user_email === null || this.formData.user_email === '') {
+        //check if email is not set
         this.show_error = true;
         this.err_msg += "Email cannot be empty.";
         this.validation_errors.user_email_failed = true;
       }
 
       if (this.formData.user_name === null || this.formData.user_name === '') {
+        //check if user's name is not set
         this.show_error = true;
         this.err_msg += " Name cannot be empty.";
         this.validation_errors.user_name_failed = true;
       }
 
       if (this.formData.user_dob === null || this.formData.user_dob === '') {
+        //check if user's date of birth is not sett
         this.show_error = true;
         this.err_msg += " Date of birth cannot be empty.";
         this.validation_errors.user_dob_failed = true;
       }
 
+      if (this.formData.user_dob > this.date_today_string) {
+        //check if user's date is incorrect (after today)
+        this.show_error = true;
+        this.err_msg += " Date of birth is incorrect.";
+        this.validation_errors.user_dob_failed = true;
+      }
+
       if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) {
+        //if everything is in order, post
         this.show_error = false;
         this.err_msg = "";
         this.postData();
       }
     },
     clear_validation_flags: function clear_validation_flags() {
+      //clear flags from previous runs
       this.err_msg = "";
       this.validation_errors.user_email_failed = null;
       this.validation_errors.user_name_failed = null;
       this.validation_errors.user_dob_failed = null;
+    },
+    date_setter: function date_setter() {
+      //get today's date in YYYY-MM-DD format (same format as DB)
+      var today = new Date();
+      today = today.getUTCFullYear() + '-' + ('00' + (today.getUTCMonth() + 1)).slice(-2) + '-' + ('00' + today.getUTCDate()).slice(-2) + ' ';
+      this.date_today_string = today;
     }
   }
 });
@@ -2291,14 +2316,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       articles: [],
-      country_code: null,
-      topic: null,
       user_id: null,
-      sort_by: null
+      sort_by: null,
+      no_articles: null
     };
   },
   beforeCreate: function beforeCreate() {
@@ -2319,8 +2349,12 @@ __webpack_require__.r(__webpack_exports__);
         user_id: this.user_id
       }).then(function (response) {
         //check existence of data before assigning
+        if (response.data === undefined || response.data.length == 0) {
+          //alert("You don't have any favorited articles :(")
+          _this.no_articles = true;
+        }
+
         if (response.data) _this.articles = response.data;
-        console.log("Success");
       })["catch"](function (error) {});
     },
     unfavorite: function unfavorite(article) {
@@ -21342,176 +21376,212 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("br"),
-      _vm._v(" "),
-      _c("center", [_vm._v("Your saved headlines:")]),
-      _vm._v(" "),
-      _c("center", [
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.sort_by,
-                expression: "sort_by"
-              }
-            ],
-            on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.sort_by = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
-            }
-          },
+  return _c("div", [
+    _c("br"),
+    _vm._v(" "),
+    _vm.no_articles
+      ? _c(
+          "div",
           [
-            _c("option", { attrs: { disabled: "", value: "" } }, [
-              _vm._v("Please select one")
-            ]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "business" } }, [
-              _vm._v("Business News")
-            ]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "sports" } }, [
-              _vm._v("Sports News")
-            ]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "ae" } }, [_vm._v("UAE News")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "eg" } }, [_vm._v("Egypt News")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "all" } }, [_vm._v("All News")])
-          ]
+            _c("center", [
+              _c("h2", [
+                _vm._v(
+                  " You have no saved articles. You can save articles from the news page. The button below will take you to the news page. "
+                ),
+                _c("br")
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$router.push("/news")
+                    }
+                  }
+                },
+                [_vm._v("Go To News Page")]
+              )
+            ])
+          ],
+          1
         )
-      ]),
-      _vm._v(" "),
-      _c("br"),
-      _c("br"),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "container-fluid" },
-        _vm._l(_vm.articles, function(article, index) {
-          return _c("div", { key: index }, [
-            _vm.sort_by === article.category ||
-            _vm.sort_by === article.country ||
-            _vm.sort_by === "all"
-              ? _c("div", [
-                  !article.deleted
-                    ? _c(
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.no_articles
+      ? _c(
+          "div",
+          [
+            _c("center", [
+              _c("h2", [
+                _vm._v("Saved Headlines "),
+                _c("br"),
+                _vm._v(" Filter by:")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("center", [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.sort_by,
+                      expression: "sort_by"
+                    }
+                  ],
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.sort_by = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", value: "" } }, [
+                    _vm._v("Please select one")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "business" } }, [
+                    _vm._v("Business News")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "sports" } }, [
+                    _vm._v("Sports News")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "ae" } }, [
+                    _vm._v("UAE News")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "eg" } }, [
+                    _vm._v("Egypt News")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "all" } }, [
+                    _vm._v("All News")
+                  ])
+                ]
+              )
+            ])
+          ],
+          1
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("br"),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "container-fluid" },
+      _vm._l(_vm.articles, function(article, index) {
+        return _c("div", { key: index }, [
+          _vm.sort_by === article.category ||
+          _vm.sort_by === article.country ||
+          _vm.sort_by === "all"
+            ? _c("div", [
+                !article.deleted
+                  ? _c("div", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          staticStyle: { float: "right" },
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.unfavorite(article)
+                            }
+                          }
+                        },
+                        [_vm._v("X")]
+                      ),
+                      _vm._v(" "),
+                      _c(
                         "div",
+                        { staticClass: "row" },
                         [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger",
-                              staticStyle: { float: "right" },
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.unfavorite(article)
+                          _c("center", [
+                            _c("div", { staticClass: "col-md-12" }, [
+                              _c("h3", [
+                                _vm._v(
+                                  "\n                                    " +
+                                    _vm._s(article.title) +
+                                    " -\n                                    "
+                                ),
+                                _c("h1", [
+                                  _vm._v(
+                                    _vm._s(article.country) +
+                                      " - " +
+                                      _vm._s(article.category)
+                                  )
+                                ])
+                              ]),
+                              _c("img", {
+                                attrs: {
+                                  src: article.urlToImage,
+                                  width: 200,
+                                  height: 100
                                 }
-                              }
-                            },
-                            [_vm._v("X")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "row" },
-                            [
-                              _c("center", [
-                                _c("div", { staticClass: "col-md-12" }, [
-                                  _c("h3", [
-                                    _vm._v(
-                                      "\n                                        " +
-                                        _vm._s(article.title) +
-                                        " - "
-                                    ),
-                                    _c("h1", [
-                                      _vm._v(
-                                        _vm._s(article.country) +
-                                          " - " +
-                                          _vm._s(article.category)
-                                      )
-                                    ])
-                                  ]),
-                                  _c("img", {
-                                    attrs: {
-                                      src: article.urlToImage,
-                                      width: 200,
-                                      height: 100
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("dl", [
-                                    _c("dt", [
-                                      _vm._v(
-                                        "\n                                                Snippet from article: "
-                                      ),
-                                      _c("br"),
-                                      _vm._v(
-                                        " \n                                                " +
-                                          _vm._s(article.description) +
-                                          "\n                                                "
-                                      ),
-                                      _c("br"),
-                                      _vm._v("Full article: "),
-                                      _c("br"),
-                                      _c(
-                                        "a",
-                                        { attrs: { href: article.url } },
-                                        [
-                                          _c(
-                                            "button",
-                                            { staticClass: "btn btn-primary" },
-                                            [
-                                              _vm._v(
-                                                "Read on " +
-                                                  _vm._s(article.source)
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      )
-                                    ])
+                              }),
+                              _vm._v(" "),
+                              _c("dl", [
+                                _c("dt", [
+                                  _vm._v(
+                                    "\n                                                        Snippet from article: "
+                                  ),
+                                  _c("br"),
+                                  _vm._v(
+                                    " \n                                                        " +
+                                      _vm._s(article.description) +
+                                      "\n                                                        "
+                                  ),
+                                  _c("br"),
+                                  _vm._v("Full article: "),
+                                  _c("br"),
+                                  _c("a", { attrs: { href: article.url } }, [
+                                    _c(
+                                      "button",
+                                      { staticClass: "btn btn-primary" },
+                                      [
+                                        _vm._v(
+                                          "Read on " + _vm._s(article.source)
+                                        )
+                                      ]
+                                    )
                                   ])
                                 ])
                               ])
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c("center"),
-                          _vm._v(" "),
-                          _c("hr")
+                            ])
+                          ])
                         ],
                         1
-                      )
-                    : _vm._e()
-                ])
-              : _vm._e()
-          ])
-        }),
-        0
-      )
-    ],
-    1
-  )
+                      ),
+                      _vm._v(" "),
+                      _c("hr")
+                    ])
+                  : _vm._e()
+              ])
+            : _vm._e()
+        ])
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

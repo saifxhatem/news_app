@@ -1,50 +1,56 @@
 <template>
     <div>
         <br>
-        <center>Your saved headlines:</center>
-        <center><select v-model="sort_by">
-            <option disabled value="">Please select one</option>
-            <option value="business">Business News</option>
-            <option value="sports">Sports News</option>
-            <option value="ae">UAE News</option>
-            <option value="eg">Egypt News</option>
-            <option value="all">All News</option>  
-        </select></center>
-        
+    
+        <div v-if="no_articles">
+            <center>
+                <h2> You have no saved articles. You can save articles from the news page. The button below will take you to the news page. <br></h2>
+                <button type="button" @click="$router.push('/news')" class="btn btn-primary">Go To News Page</button>
+            </center>
+        </div>
+        <div v-if="!no_articles">
+            <center>
+                <h2>Saved Headlines <br> Filter by:</h2>
+            </center>
+            <center><select v-model="sort_by">
+                    <option disabled value="">Please select one</option>
+                    <option value="business">Business News</option>
+                    <option value="sports">Sports News</option>
+                    <option value="ae">UAE News</option>
+                    <option value="eg">Egypt News</option>
+                    <option value="all">All News</option>  
+                </select></center>
+        </div>
+    
+    
         <br><br>
         <div class="container-fluid">
             <div v-for="(article,index) in articles" :key="index">
-                <div v-if="sort_by === article.category || sort_by === article.country || sort_by === 'all' "> 
+                <div v-if="sort_by === article.category || sort_by === article.country || sort_by === 'all' ">
                     <!-- this selector can be done on the backend, but I decided to use this as making the selector on the api would result in more API calls
-                    so frontend seems like the lesser evil for now -->
+                            so frontend seems like the lesser evil for now -->
                     <div v-if="!article.deleted">
                         <button type="button" @click="unfavorite(article)" class="btn btn-danger" style="float: right;">X</button>
                         <div class="row">
-                            
-                                <center>
-                                    <div class="col-md-12">
-                                        <h3>
-                                            {{article.title}} - <h1>{{article.country}} - {{article.category}}</h1>
-            
-                                        </h3><img :src="article.urlToImage" :width="200" :height="100">
-                                        <dl>
-                                            <dt>
-                                                    Snippet from article: <br> 
-                                                    {{article.description}}
-                                                    <br>Full article: <br><a :href="article.url"><button class="btn btn-primary">Read on {{article.source}}</button></a>
-                                                </dt>
-                                        </dl>
-                                    </div>
-                                </center>
-                            
+    
+                            <center>
+                                <div class="col-md-12">
+                                    <h3>
+                                        {{article.title}} -
+                                        <h1>{{article.country}} - {{article.category}}</h1>
+    
+                                    </h3><img :src="article.urlToImage" :width="200" :height="100">
+                                    <dl>
+                                        <dt>
+                                                            Snippet from article: <br> 
+                                                            {{article.description}}
+                                                            <br>Full article: <br><a :href="article.url"><button class="btn btn-primary">Read on {{article.source}}</button></a>
+                                                        </dt>
+                                    </dl>
+                                </div>
+                            </center>
+    
                         </div>
-        
-        
-                        <center>
-        
-                        </center>
-        
-        
                         <hr>
                     </div>
                 </div>
@@ -59,10 +65,9 @@ export default {
     data: function() {
         return {
             articles: [],
-            country_code: null,
-            topic: null,
             user_id: null,
-            sort_by: null
+            sort_by: null,
+            no_articles: null,
         }
     },
 
@@ -83,9 +88,12 @@ export default {
             axios.post('load-favorites', { user_id: this.user_id })
                 .then((response) => {
                     //check existence of data before assigning
+                    if (response.data === undefined || response.data.length == 0) {
+                        //alert("You don't have any favorited articles :(")
+                        this.no_articles = true;
+                    }
                     if (response.data)
                         this.articles = response.data;
-                    console.log("Success")
                 })
                 .catch(function(error) {});
 

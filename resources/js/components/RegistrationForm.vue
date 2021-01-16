@@ -54,7 +54,8 @@ export default {
             },
             show_error: false,
             err_msg: "",
-            
+            date_today_string: null
+
         }
 
 
@@ -64,57 +65,69 @@ export default {
 
     methods: {
         postData(e) {
-            
+
             axios.post("register", this.formData)
                 .then((result) => {
-                    console.log("Success")
-                    //this.$router.push({ name: 'home', params: { user_id: this.user_id } })
+                    alert("You have been registered on News App. Please check your email for your password.");
+                    this.$router.push({ name: 'index'})
 
                 })
                 .catch((error) => {
                     this.show_error = true;
-                    console.log(this.validation_errors)
-                    console.log(this.formData)
-                    if (error.response.status == 422) {
-
-                        this.err_msg = "Shit happened"
+                    let errors = error.response.data.errors;
+                    for (error in errors) {
+                        console.log(error)
+                        if (error = "user_email") this.err_msg = "Email is already in use."
                     }
                 });
 
 
         },
-        
+
         validate_form() {
-            //clear flags from previous runs
-            this.clear_validation_flags();
             
-            if (this.formData.user_email === null || this.formData.user_email === '') {
+            this.clear_validation_flags(); //clear flags from previous runs
+            this.date_setter(); //get today's date
+            //validate
+            if (this.formData.user_email === null || this.formData.user_email === '') { //check if email is not set
                 this.show_error = true;
                 this.err_msg += "Email cannot be empty."
                 this.validation_errors.user_email_failed = true;
             }
-            if (this.formData.user_name === null || this.formData.user_name === '') {
+            if (this.formData.user_name === null || this.formData.user_name === '') { //check if user's name is not set
                 this.show_error = true;
                 this.err_msg += " Name cannot be empty."
                 this.validation_errors.user_name_failed = true;
             }
-            if (this.formData.user_dob === null || this.formData.user_dob === '') {
+            if (this.formData.user_dob === null || this.formData.user_dob === '') { //check if user's date of birth is not sett
                 this.show_error = true;
                 this.err_msg += " Date of birth cannot be empty."
                 this.validation_errors.user_dob_failed = true;
             }
-            if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) {
+            if (this.formData.user_dob > this.date_today_string) { //check if user's date is incorrect (after today)
+                this.show_error = true;
+                this.err_msg += " Date of birth is incorrect."
+                this.validation_errors.user_dob_failed = true;
+            }
+            if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) { //if everything is in order, post
                 this.show_error = false;
                 this.err_msg = "";
                 this.postData()
             }
         },
-        clear_validation_flags() {
+        clear_validation_flags() { //clear flags from previous runs
             this.err_msg = "";
             this.validation_errors.user_email_failed = null;
             this.validation_errors.user_name_failed = null;
             this.validation_errors.user_dob_failed = null;
         },
+        date_setter() { //get today's date in YYYY-MM-DD format (same format as DB)
+            let today = new Date();
+            today = today.getUTCFullYear() + '-' +
+                ('00' + (today.getUTCMonth() + 1)).slice(-2) + '-' +
+                ('00' + today.getUTCDate()).slice(-2) + ' '
+            this.date_today_string = today;
+        }
     }
 }
 </script>
