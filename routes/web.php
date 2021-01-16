@@ -23,18 +23,7 @@ Route::get('/', function () {
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
-
-Route::get('load-news/{country_code}', [NewsController::class, 'load_news']);
-
-
-Route::get('send-mail', function () {
-   
-    $details = [
-        'title' => 'title',
-        'body' => 'body'
-    ];
-   
-    \Mail::to('saifxhatem@gmail.com')->send(new \App\Mail\Mailer($details));
-   
-    dd("Email is Sent.");
-});
+Route::get('load-news/{country_code}/{topic}', [NewsController::class, 'load_news']);
+Route::post('add-to-favorites', [FavoriteController::class, 'add_favorite']);
+Route::post('load-favorites', [FavoriteController::class, 'load_favorite']);
+Route::post('delete-favorite', [FavoriteController::class, 'delete_favorite']);
