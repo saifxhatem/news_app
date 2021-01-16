@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FavoriteController;
 
 
 
@@ -24,7 +25,10 @@ Route::get('/', function () {
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
-Route::get('load-news/{country_code}', [NewsController::class, 'load_news']);
+Route::get('load-news/{country_code}/{topic}', [NewsController::class, 'load_news']);
+Route::post('add-to-favorites', [FavoriteController::class, 'add_favorite']);
+Route::post('load-favorites', [FavoriteController::class, 'load_favorite']);
+Route::post('delete-favorite', [FavoriteController::class, 'delete_favorite']);
 
 
 Route::get('send-mail', function () {

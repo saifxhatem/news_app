@@ -76,8 +76,10 @@ export default {
                         this.errors = "";
                         this.$session.start()
                         this.$session.set('user_id', result.data.id)
+                        this.$session.set('name', result.data.name)
                         console.log("session id: " + this.$session.id())
                         console.log("session -> user_id: " + this.$session.get('user_id'))
+                        alert("You have successfully logged in. You will now be redirected to the homepage.");
                         this.$router.push({ name: 'index'})
                     }
 
