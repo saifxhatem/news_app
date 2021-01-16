@@ -1,9 +1,7 @@
 <template>
     <div>
         <br/><br/>
-        <h2>Hello World!</h2>
-        <br> <br>
-        <center></center>
+        <h2><center>{{greet_message}}</center></h2>
     </div>
 
 </template>
@@ -11,7 +9,12 @@
 
 <script>
 export default {
-    
+    data() {
+        return {
+            greet_message: "Welcome to News App, Guest!"
+        }
+    }
+    ,
     mounted(){
         this.session_check();
     },
@@ -23,6 +26,7 @@ export default {
             }
             else {
                 console.log("User logged in! ID = " + this.$session.get('user_id'))
+                this.greet_message = "Welcome to News App, " + this.$session.get('name') + "!"
             }
         }
     }

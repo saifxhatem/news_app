@@ -10,8 +10,8 @@ import Login from './views/Login.vue'
 import Index from './views/Index.vue'
 import Register from './views/Register.vue'
 import News from './views/News.vue'
-import Dash from './views/Dash.vue'
 import Logout from './views/Logout.vue'
+import Favorites from './views/Favorites.vue'
 
 
 
@@ -25,8 +25,8 @@ const routes = [
     { name: 'register', path: '/register', component: Register},
     { name: 'login', path: '/login', component: Login},
     { name: 'news', path: '/news', component: News},
-    { name: 'dash', path: '/dash', component: Dash},
     { name: 'logout', path: '/logout', component: Logout},
+    { name: 'favorites', path: '/favorites', component: Favorites},
     
 
   
