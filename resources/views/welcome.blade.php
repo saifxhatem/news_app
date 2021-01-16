@@ -20,10 +20,10 @@
     <div id= "app">
     <center>
         <router-link to="/">Home</router-link>
+        <router-link to="/news">News</router-link>
         <div v-if="$session.exists()"> <!--  If user is logged in -->
-            <router-link to="/dash">Dash</router-link>
             <router-link to="/logout">Logout</router-link>
-            <router-link to="/news">News</router-link>
+            <router-link to="/favorites">Favorites</router-link>
         </div>
         <div v-if="!$session.exists()"> <!--  If user is not logged in -->
             <router-link to="/login">Login</router-link>
