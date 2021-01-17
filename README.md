@@ -8,7 +8,7 @@ News app is a simple app that allows users to read news headlines from two count
 - PHP (v7.3+)
 - NPM
 - Composer
-- MySQL (5.3+), or any other database system supported by Laravel [supported by Laravel](https://laravel.com/docs/8.x/database#introduction "DB Systems Supported by Laravel")
+- MySQL (5.3+), or any other database system [supported by Laravel](https://laravel.com/docs/8.x/database#introduction "DB Systems Supported by Laravel")
 - An API Key from NewsAPI (https://newsapi.org/)
 
 
