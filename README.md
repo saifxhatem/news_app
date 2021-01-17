@@ -10,6 +10,7 @@ News app is a simple app that allows users to read news headlines from two count
 - Composer
 - MySQL
 - An API Key from NewsAPI (https://newsapi.org/)
+- 
 ## To run the project:
   - Install requirements
   - Create a database for the project
@@ -39,6 +40,13 @@ MAIL_FROM_ADDRESS=
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 `MAIL_FROM_ADDRESS=` is the email address you want the emails your project sends to have
+
+Note: if you want to use Gmail as your SMTP host you will need to 
+1. Setup 2FA
+2. Create an app password
+3. Use that app password in the `MAIL_PASSWORD=` field instead of your own account's password
+4. You _may_ also need to tick "Allow unsafe apps"
+
 
 
 After you have defined the env variables, we need to make sure everything is defined correctly.
