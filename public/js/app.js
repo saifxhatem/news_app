@@ -2574,6 +2574,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2643,6 +2652,11 @@ __webpack_require__.r(__webpack_exports__);
       if (article.description === null || article.description === '') //edge case where newsAPI does not return a description
         {
           article.description = "No description available"; //we assign a description so that the article does not fail our API's validation
+        }
+
+      if (article.urlToImage === null || article.urlToImage === '') //sometimes NewsAPI does not return an article image
+        {
+          article.urlToImage = "https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png"; //we assign a urlToImage so that the article does not fail our API's validation
         }
 
       this.$set(article, 'category', this.topic); //set category so we can have an identifier for the topic in our db
@@ -21815,80 +21829,111 @@ var render = function() {
         "div",
         { staticClass: "container-fluid" },
         _vm._l(_vm.articles, function(article, index) {
-          return _c("div", { key: index }, [
-            _c(
-              "div",
-              { staticClass: "row" },
-              [
-                _c("center", [
-                  _c("div", { staticClass: "col-md-12" }, [
-                    _c("h3", [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(article.title) +
-                          "\n\n                        "
-                      )
-                    ]),
-                    _c("img", {
-                      attrs: {
-                        src: article.urlToImage,
-                        width: 200,
-                        height: 100
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("dl", [
-                      _c("dt", [
-                        _vm._v("\n    \t\t\t\t\tSnippet from article: "),
-                        _c("br"),
+          return _c(
+            "div",
+            { key: index },
+            [
+              _c(
+                "div",
+                { staticClass: "row" },
+                [
+                  _c("center", [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c("h3", [
                         _vm._v(
-                          " \n                        " +
-                            _vm._s(article.description) +
-                            "\n    \t\t\t\t"
+                          "\n                            " +
+                            _vm._s(article.title) +
+                            "\n\n                        "
                         )
+                      ]),
+                      _vm._v(" "),
+                      article.urlToImage
+                        ? _c("div", [
+                            _c("img", {
+                              attrs: {
+                                src: article.urlToImage,
+                                width: 200,
+                                height: 100
+                              }
+                            })
+                          ])
+                        : _c("div", [
+                            _c("img", {
+                              attrs: {
+                                src:
+                                  "https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png",
+                                width: 200,
+                                height: 100
+                              }
+                            })
+                          ]),
+                      _vm._v(" "),
+                      _c("dl", [
+                        _c("dt", [
+                          _vm._v("\n    \t\t\t\t\tSnippet from article: "),
+                          _c("br"),
+                          _vm._v(
+                            " \n                        " +
+                              _vm._s(article.description) +
+                              "\n    \t\t\t\t"
+                          )
+                        ])
                       ])
                     ])
                   ])
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _vm.logged_in
-              ? _c(
-                  "div",
-                  [
-                    _c("center", [
-                      !article.saved
-                        ? _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-primary",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.save_headline(article)
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _vm.logged_in
+                ? _c(
+                    "div",
+                    [
+                      _c("center", [
+                        !article.saved
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.save_headline(article)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Save This Headline")]
-                          )
-                        : _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success",
-                              attrs: { type: "button" }
-                            },
-                            [_vm._v("Saved ❤️")]
-                          )
-                    ])
-                  ],
-                  1
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _c("hr")
-          ])
+                              },
+                              [_vm._v("Save This Headline")]
+                            )
+                          : _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: { type: "button" }
+                              },
+                              [_vm._v("Saved ❤️")]
+                            )
+                      ])
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("center", [
+                _vm._v("Full article: "),
+                _c("br"),
+                _c("a", { attrs: { href: article.url } }, [
+                  _c("button", { staticClass: "btn btn-info" }, [
+                    _vm._v("Read on " + _vm._s(article.source.name))
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("hr")
+            ],
+            1
+          )
         }),
         0
       )

@@ -26,7 +26,14 @@
                             <h3>
                                 {{article.title}}
     
-                            </h3><img :src="article.urlToImage" :width="200" :height="100">
+                            </h3>
+                            <!-- Since some articles do not have a given picture, in the case that they don't we assign one for aesthetic purposes -->
+                            <div v-if="article.urlToImage">
+                                <img :src="article.urlToImage" :width="200" :height="100">
+                            </div>
+                            <div v-else>
+                                <img src="https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png" :width="200" :height="100">
+                            </div>    
                             <dl>
                                 <dt>
         					Snippet from article: <br> 
@@ -46,6 +53,8 @@
                     </center>
                     
                 </div>
+                <br>
+                <center>Full article: <br><a :href="article.url"><button class="btn btn-info">Read on {{article.source.name}}</button></a></center>
                 <hr>
     
             </div>
@@ -123,6 +132,10 @@ export default {
             if (article.description === null || article.description === '') //edge case where newsAPI does not return a description
             {
                 article.description = "No description available"; //we assign a description so that the article does not fail our API's validation
+            }
+            if (article.urlToImage === null || article.urlToImage === '') //sometimes NewsAPI does not return an article image
+            {
+                article.urlToImage = "https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png"; //we assign a urlToImage so that the article does not fail our API's validation
             }
             this.$set(article, 'category', this.topic) //set category so we can have an identifier for the topic in our db
             this.$set(article, 'country', this.country_code) //set country so we can have an identifier for the country in our db
