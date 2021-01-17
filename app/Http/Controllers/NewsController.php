@@ -23,7 +23,6 @@ class NewsController extends Controller
       //validation passed, create the string we will use to make the API call using user's chosen country code and topic  
       $url_string = "https://newsapi.org/v2/top-headlines?country=" . $country_code . "&category=" . $topic . "&apiKey=d68eedc60ffb475abe53a4d5d26acc0c";
       //make the API call
-      //dd($url_string);
       $news = Http::get($url_string);
       return $news['articles'];
     }
