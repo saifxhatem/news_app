@@ -1964,6 +1964,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     message: {
@@ -2029,27 +2033,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       formData: {
         user_password: null,
-        user_email: null
+        user_email: null //This is the data from our forms
+
       },
       validation_errors: {
         user_password_failed: null,
-        user_email_failed: null
+        user_email_failed: null //flags to signal that validation errors have occured
+
       },
       show_error: false,
+      //flag to show the error alert component
       err_msg: "",
-      errors: null,
-      user_id: null
+      //error message to display in the error alert component
+      errors: null //error array that is returned from laravel 
+
     };
   },
   methods: {
     postData: function postData(e) {
       var _this = this;
 
+      //all inputs validated, make the call to post the data
       axios.post("login", this.formData).then(function (result) {
         if (result.status === 205) {
           _this.show_error = true;
@@ -2064,8 +2074,6 @@ __webpack_require__.r(__webpack_exports__);
 
           _this.$session.set('name', result.data.name);
 
-          console.log("session id: " + _this.$session.id());
-          console.log("session -> user_id: " + _this.$session.get('user_id'));
           alert("You have successfully logged in. You will now be redirected to the homepage.");
 
           _this.$router.push({
@@ -2079,6 +2087,12 @@ __webpack_require__.r(__webpack_exports__);
     validate_form: function validate_form() {
       //clear flags from previous runs
       this.clear_validation_flags();
+      /*
+          Each if condition checks if a certain field is empty and sets the 
+          corresponding validation error flag.
+          If there are no validation error flags set the last if condition calls the postData() method
+          which does the post request to our backend.
+      */
 
       if (this.formData.user_email === null || this.formData.user_email === '') {
         this.show_error = true;
@@ -2099,6 +2113,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     clear_validation_flags: function clear_validation_flags() {
+      /*
+          Clear validation flags from previous validation
+      */
       this.err_msg = "";
       this.validation_errors.user_email_failed = null;
       this.validation_errors.user_password_failed = null;
@@ -2154,28 +2171,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       formData: {
         user_name: null,
         user_email: null,
-        user_dob: null
+        user_dob: null //This is the data from our forms
+
       },
       validation_errors: {
         user_name_failed: null,
         user_email_failed: null,
-        user_dob_failed: null
+        user_dob_failed: null //flags to signal that validation errors have occured
+
       },
       show_error: false,
+      //flag to show the error alert component
       err_msg: "",
+      //error message to display in the error alert component
       date_today_string: null
+      /*this string holds a date in "YYYY-MM-DD" format, 
+      and is used to in validating a user's date of birth. */
+
     };
   },
   methods: {
     postData: function postData(e) {
       var _this = this;
 
+      //all inputs validated, make the call to post the data
       axios.post("register", this.formData).then(function (result) {
         alert("You have been registered on News App. Please check your email for your password.");
 
@@ -2187,7 +2216,6 @@ __webpack_require__.r(__webpack_exports__);
         var errors = error.response.data.errors;
 
         for (error in errors) {
-          console.log(error);
           if (error = "user_email") _this.err_msg = "Email is already in use.";
         }
       });
@@ -2196,7 +2224,13 @@ __webpack_require__.r(__webpack_exports__);
       this.clear_validation_flags(); //clear flags from previous runs
 
       this.date_setter(); //get today's date
-      //validate
+
+      /*
+          Each if condition checks if a certain field is empty and sets the 
+          corresponding validation error flag.
+          If there are no validation error flags set the last if condition calls the postData() method
+          which does the post request to our backend.
+      */
 
       if (this.formData.user_email === null || this.formData.user_email === '') {
         //check if email is not set
@@ -2234,16 +2268,20 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     clear_validation_flags: function clear_validation_flags() {
-      //clear flags from previous runs
+      /*
+          Clear validation flags from previous validation
+      */
       this.err_msg = "";
       this.validation_errors.user_email_failed = null;
       this.validation_errors.user_name_failed = null;
       this.validation_errors.user_dob_failed = null;
     },
     date_setter: function date_setter() {
-      //get today's date in YYYY-MM-DD format (same format as DB)
-      var today = new Date();
-      today = today.getUTCFullYear() + '-' + ('00' + (today.getUTCMonth() + 1)).slice(-2) + '-' + ('00' + today.getUTCDate()).slice(-2) + ' ';
+      //get today's date 
+      var today = new Date(); //transform the date to be in YYYY-MM-DD format (same format as MYSQL date column type
+
+      today = today.getUTCFullYear() + '-' + ('00' + (today.getUTCMonth() + 1)).slice(-2) + '-' + ('00' + today.getUTCDate()).slice(-2) + ' '; //finally assign the value to our string    
+
       this.date_today_string = today;
     }
   }
@@ -2328,16 +2366,20 @@ __webpack_require__.r(__webpack_exports__);
       articles: [],
       user_id: null,
       sort_by: null,
-      no_articles: null
+      //used to specify which articles to show based on user's filter pref
+      no_articles: null //flag to signal that the user has no saved articles
+
     };
   },
   beforeCreate: function beforeCreate() {
+    //check if user is logged in and therefore should have access to this page
     if (!this.$session.exists()) {
       alert("You are not logged in! You will be redirected to homepage");
-      this.$router.push('/');
+      this.$router.push('/'); //redirect if user is not logged in
     }
   },
   mounted: function mounted() {
+    //get user's id and load their favorited articles
     this.user_id = this.$session.get('user_id');
     this.load_articles();
   },
@@ -2348,49 +2390,26 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('load-favorites', {
         user_id: this.user_id
       }).then(function (response) {
-        //check existence of data before assigning
+        //check if user has any saved articles
         if (response.data === undefined || response.data.length == 0) {
-          //alert("You don't have any favorited articles :(")
           _this.no_articles = true;
         }
 
-        if (response.data) _this.articles = response.data;
+        if (response.data) //check existence of data before assigning
+          _this.articles = response.data;
       })["catch"](function (error) {});
     },
     unfavorite: function unfavorite(article) {
       var _this2 = this;
 
       axios.post('delete-favorite', {
+        //send the request to delete the article the user wants to remove
         user_id: this.user_id,
         article_id: article.id
       }).then(function (response) {
-        //check existence of data before assigning
-        console.log("Deleted");
-
         _this2.$set(article, 'deleted', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
 
       })["catch"](function (error) {});
-    },
-    chosen_region: function chosen_region(chosen_country_code) {
-      this.articles = []; //clear previous articles in case user wants to change the region
-
-      this.topic = null; //clear previously selected topic
-
-      if (chosen_country_code == 'eg') {
-        this.country_code = 'eg';
-      } else {
-        this.country_code = 'ae';
-      }
-    },
-    chosen_topic: function chosen_topic(_chosen_topic) {
-      if (_chosen_topic == 'business') {
-        //business
-        this.topic = 'business';
-        this.load_articles();
-      } else {
-        this.topic = 'sports';
-        this.load_articles();
-      }
     }
   }
 });
@@ -2418,18 +2437,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      greet_message: "Welcome to News App, Guest!"
+      greet_message: "Welcome to News App, Guest!" //default greet message
+
     };
   },
   mounted: function mounted() {
     this.session_check();
   },
   methods: {
+    //check to see if user is logged in or not and set greet message if user is logged in
     session_check: function session_check() {
-      if (!this.$session.exists()) {
-        console.log("User not logged");
-      } else {
-        console.log("User logged in! ID = " + this.$session.get('user_id'));
+      if (this.$session.exists()) {
         this.greet_message = "Welcome to News App, " + this.$session.get('name') + "!";
       }
     }
@@ -2477,6 +2495,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
+    //check if user is logged in, and if they are logged in log them out and destroy the session.
     if (!this.$session.exists()) {
       alert("You are not logged in! You will be redirected to the homepage");
       this.$router.push('/');
@@ -2551,6 +2570,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2561,6 +2584,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    //check if our user is logged in so we can show the button to save articles
     if (!this.$session.exists()) {
       this.logged_in = false;
     } else {
@@ -2571,9 +2595,13 @@ __webpack_require__.r(__webpack_exports__);
     load_articles: function load_articles() {
       var _this = this;
 
-      axios.get('/load-news/' + this.country_code + '/' + this.topic).then(function (response) {
+      var url = '/load-news/' + this.country_code + '/' + this.topic;
+      axios.get(url).then(function (response) {
         //check existence of data before assigning
-        if (response.data) _this.articles = response.data;
+        if (response.data) {
+          //api call successful, assign data
+          _this.articles = response.data;
+        }
       })["catch"](function (error) {});
     },
     chosen_region: function chosen_region(chosen_country_code) {
@@ -2581,15 +2609,16 @@ __webpack_require__.r(__webpack_exports__);
 
       this.topic = null; //clear previously selected topic
 
-      if (chosen_country_code == 'eg') {
+      if (chosen_country_code === 'eg') {
+        //assign user's chosen country
         this.country_code = 'eg';
       } else {
         this.country_code = 'ae';
       }
     },
     chosen_topic: function chosen_topic(_chosen_topic) {
-      if (_chosen_topic == 'business') {
-        //business
+      if (_chosen_topic === 'business') {
+        //assign user's chosen topic
         this.topic = 'business';
         this.load_articles();
       } else {
@@ -2603,16 +2632,12 @@ __webpack_require__.r(__webpack_exports__);
       this.article_preprocess(article); //call our preprocessor
 
       axios.post("/add-to-favorites", article).then(function (result) {
-        console.log("Success"); //article.saved = true;
-
         _this2.$set(article, 'saved', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
 
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      })["catch"](function (error) {});
     },
     article_preprocess: function article_preprocess(article) {
-      //we need to do some stuff to our article object before we can send
+      //we need to do some stuff to our article object before we can send it to our backend and save it
       article.user_id = this.$session.get('user_id'); //apend user ID to our object
 
       if (article.description === null || article.description === '') //edge case where newsAPI does not return a description
@@ -21032,7 +21057,9 @@ var render = function() {
       _c("br"),
       _vm._v(" "),
       _vm.show_error
-        ? _c("error-alert", { attrs: { message: _vm.err_msg } })
+        ? _c("error-alert", {
+            attrs: { message: "Login failed.", error: _vm.err_msg }
+          })
         : _vm._e(),
       _vm._v(" "),
       _vm.errors
@@ -21418,7 +21445,7 @@ var render = function() {
               _c("h2", [
                 _vm._v("Saved Headlines "),
                 _c("br"),
-                _vm._v(" Filter by:")
+                _vm._v(" Filter saved articles by:")
               ])
             ]),
             _vm._v(" "),
@@ -21542,13 +21569,13 @@ var render = function() {
                               _c("dl", [
                                 _c("dt", [
                                   _vm._v(
-                                    "\n                                                        Snippet from article: "
+                                    "\n                                        Snippet from article: "
                                   ),
                                   _c("br"),
                                   _vm._v(
-                                    " \n                                                        " +
+                                    " \n                                        " +
                                       _vm._s(article.description) +
-                                      "\n                                                        "
+                                      "\n                                        "
                                   ),
                                   _c("br"),
                                   _vm._v("Full article: "),
@@ -37299,6 +37326,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 
+ //use vue-router and vue-session
 
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 Vue.use(vue_session__WEBPACK_IMPORTED_MODULE_1___default.a);
@@ -37330,7 +37358,8 @@ var routes = [{
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes //mode: 'history'
 
-});
+}); //define our components
+
 Vue.component('error-alert', __webpack_require__(/*! ./components/ErrorAlert.vue */ "./resources/js/components/ErrorAlert.vue")["default"]);
 Vue.component('registration-form', __webpack_require__(/*! ./components/RegistrationForm.vue */ "./resources/js/components/RegistrationForm.vue")["default"]);
 Vue.component('login-form', __webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue")["default"]);

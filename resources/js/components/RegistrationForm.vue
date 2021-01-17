@@ -1,7 +1,11 @@
+<!-- This is the registration component, it has a form where users input their details 
+     and attempt to register on our app.
+-->
+
 <template>
     <div>
         <br/><br/>
-        <error-alert v-if="show_error" message="Registration Failed" :error="err_msg"> </error-alert>
+        <error-alert v-if="show_error" message="Registration Failed" :error="err_msg"> </error-alert> <!-- If error flag is set, show error alert component -->
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -9,7 +13,7 @@
                         <div class="card-header">Register</div>
     
                         <div class="card-body">
-                            <form @submit.prevent="validate_form" method="post">
+                            <form @submit.prevent="validate_form" method="post"> <!-- When user clicks Register button, call validate_form() method -->
                                 <div class="form-group">
                                     <label for="user-name-label">Full Name </label>
                                     <input type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_name_failed}" id="user-name" placeholder="Ex: John Smith" v-model="formData.user_name" />
@@ -46,15 +50,19 @@ export default {
                 user_name: null,
                 user_email: null,
                 user_dob: null
+                //This is the data from our forms
             },
             validation_errors: {
                 user_name_failed: null,
                 user_email_failed: null,
                 user_dob_failed: null
+                //flags to signal that validation errors have occured
             },
-            show_error: false,
-            err_msg: "",
-            date_today_string: null
+            show_error: false, //flag to show the error alert component
+            err_msg: "", //error message to display in the error alert component
+            date_today_string: null 
+            /*this string holds a date in "YYYY-MM-DD" format, 
+            and is used to in validating a user's date of birth. */
 
         }
 
@@ -65,7 +73,7 @@ export default {
 
     methods: {
         postData(e) {
-
+            //all inputs validated, make the call to post the data
             axios.post("register", this.formData)
                 .then((result) => {
                     alert("You have been registered on News App. Please check your email for your password.");
@@ -76,7 +84,6 @@ export default {
                     this.show_error = true;
                     let errors = error.response.data.errors;
                     for (error in errors) {
-                        console.log(error)
                         if (error = "user_email") this.err_msg = "Email is already in use."
                     }
                 });
@@ -88,7 +95,14 @@ export default {
             
             this.clear_validation_flags(); //clear flags from previous runs
             this.date_setter(); //get today's date
-            //validate
+            
+            /*
+                Each if condition checks if a certain field is empty and sets the 
+                corresponding validation error flag.
+                If there are no validation error flags set the last if condition calls the postData() method
+                which does the post request to our backend.
+            */
+
             if (this.formData.user_email === null || this.formData.user_email === '') { //check if email is not set
                 this.show_error = true;
                 this.err_msg += "Email cannot be empty."
@@ -115,17 +129,23 @@ export default {
                 this.postData()
             }
         },
-        clear_validation_flags() { //clear flags from previous runs
+        clear_validation_flags() { 
+            /*
+                Clear validation flags from previous validation
+            */
             this.err_msg = "";
             this.validation_errors.user_email_failed = null;
             this.validation_errors.user_name_failed = null;
             this.validation_errors.user_dob_failed = null;
         },
-        date_setter() { //get today's date in YYYY-MM-DD format (same format as DB)
+        date_setter() { 
+            //get today's date 
             let today = new Date();
+            //transform the date to be in YYYY-MM-DD format (same format as MYSQL date column type
             today = today.getUTCFullYear() + '-' +
                 ('00' + (today.getUTCMonth() + 1)).slice(-2) + '-' +
                 ('00' + today.getUTCDate()).slice(-2) + ' '
+            //finally assign the value to our string    
             this.date_today_string = today;
         }
     }

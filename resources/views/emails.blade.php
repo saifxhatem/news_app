@@ -5,6 +5,7 @@
     
 </head>
 <body>
+    <!-- Define the structure of the email here -->
     <h1>{{ $details['title'] }}</h1>
     <p>Welcome to the website, {{ $details['user_name'] }}!
     <p>{{ $details['body'] }}<br/>

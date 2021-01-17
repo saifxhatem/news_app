@@ -16,6 +16,9 @@ class User extends Authenticatable
      *
      * @var array
      */
+
+    //set fillables
+
     protected $fillable = [
         'name',
         'email',
@@ -44,6 +47,7 @@ class User extends Authenticatable
 
     public function favorite()
     {
+        //define relationship of user to favorites
         return $this->hasMany(Favorite::class);
     }
 }

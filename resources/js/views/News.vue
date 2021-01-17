@@ -4,10 +4,12 @@
         <center>
             Which country do you want to see news for?
             <br><br>
+            <!-- The two buttons below call the chosen_region() method to set the country the user wants to see news from -->
             <button @click="chosen_region('eg')" type="button" class="btn btn-primary" :class="{ 'active' : country_code == 'eg'}">Egypt</button>
             <button @click="chosen_region('ae')" type="button" class="btn btn-primary" :class="{ 'active' : country_code == 'ae'}">UAE</button>
             <br><br>
             <div v-if="country_code">
+                <!-- The two buttons below call the chosen_topic() method to set the topic the user wants to see news from -->
                 Please choose a topic <br><br>
                 <button @click="chosen_topic('business')" type="button" class="btn btn-primary" :class="{ 'active' : topic == 'business'}">Business</button>
                 <button @click="chosen_topic('sports')" type="button" class="btn btn-primary" :class="{ 'active' : topic == 'sports'}">Sports</button>
@@ -17,7 +19,7 @@
         <br><br>
         <div class="container-fluid">
             <div v-for="(article,index) in articles" :key="index">
-    
+                <!-- display each article -->
                 <div class="row">
                     <center>
                         <div class="col-md-12">
@@ -37,6 +39,8 @@
                 <div v-if="logged_in">
                     
                     <center>
+                        <!-- If article has not been saved, display option to save
+                             Else, make the button display "saved" -->
                         <button v-if="!article.saved" @click="save_headline(article)" type="button" class="btn btn-primary">Save This Headline</button>
                         <button v-else type="button" class="btn btn-success">Saved ❤️</button>
                     </center>
@@ -61,6 +65,7 @@ export default {
         }
     },
     mounted() {
+        //check if our user is logged in so we can show the button to save articles
         if (!this.$session.exists()) {
             this.logged_in = false;
         } else {
@@ -70,11 +75,14 @@ export default {
     },
     methods: {
         load_articles: function() {
-            axios.get('/load-news/' + this.country_code + '/' + this.topic)
+            let url = '/load-news/' + this.country_code + '/' + this.topic;
+            axios.get(url)
                 .then((response) => {
                     //check existence of data before assigning
-                    if (response.data)
+                    if (response.data){
+                        //api call successful, assign data
                         this.articles = response.data;
+                    }
                 })
                 .catch(function(error) {});
 
@@ -82,7 +90,8 @@ export default {
         chosen_region: function(chosen_country_code) {
             this.articles = []; //clear previous articles in case user wants to change the region
             this.topic = null; //clear previously selected topic
-            if (chosen_country_code == 'eg') {
+            if (chosen_country_code === 'eg') {
+                //assign user's chosen country
                 this.country_code = 'eg';
             } else {
                 this.country_code = 'ae';
@@ -90,8 +99,8 @@ export default {
 
         },
         chosen_topic: function(chosen_topic) {
-            if (chosen_topic == 'business') {
-                //business
+            if (chosen_topic === 'business') {
+                //assign user's chosen topic
                 this.topic = 'business';
                 this.load_articles();
             } else {
@@ -103,16 +112,13 @@ export default {
             this.article_preprocess(article) //call our preprocessor
             axios.post("/add-to-favorites", article)
                 .then((result) => {
-                    console.log("Success")
-                    //article.saved = true;
                     this.$set(article, 'saved', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
 
                 })
                 .catch((error) => {
-                    console.log(error)
                 });
         },
-        article_preprocess: function (article) { //we need to do some stuff to our article object before we can send
+        article_preprocess: function (article) { //we need to do some stuff to our article object before we can send it to our backend and save it
             article.user_id = this.$session.get('user_id') //apend user ID to our object
             if (article.description === null || article.description === '') //edge case where newsAPI does not return a description
             {

@@ -14,7 +14,7 @@ import Logout from './views/Logout.vue'
 import Favorites from './views/Favorites.vue'
 
 
-
+//use vue-router and vue-session
 Vue.use(VueRouter)
 Vue.use(VueSession)
 
@@ -36,6 +36,8 @@ const router = new VueRouter({
   routes,
   //mode: 'history'
 })
+
+//define our components
 
 Vue.component('error-alert', require('./components/ErrorAlert.vue').default);
 Vue.component('registration-form', require('./components/RegistrationForm.vue').default);
