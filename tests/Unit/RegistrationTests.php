@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 
 
 class RegistrationTests extends TestCase
@@ -16,9 +17,6 @@ class RegistrationTests extends TestCase
      */
 
     /*
-        Note: the first test here actually registers a new user, so you should either clean your user table after 
-        running a test here or uncomment "use RefreshDatabase"
-
         Codes:
         200 -> Registration success Successful
         302 -> Validation failure

@@ -16,8 +16,6 @@ class LoginTests extends TestCase
      */
     
      /*
-        Note: the first test here actually registers a new user, so you should either clean your user table after 
-        running a test here or uncomment "use RefreshDatabase;"
         Codes:
         200 -> Login Successful
         205 -> Invalid email/password combination
@@ -25,7 +23,7 @@ class LoginTests extends TestCase
      */
     
     use WithFaker;
-     //use RefreshDatabase;
+    //use RefreshDatabase;
     
 
     public function test_login_with_correct_credentials()
