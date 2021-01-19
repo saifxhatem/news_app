@@ -32,24 +32,13 @@ class DeleteFavorites extends TestCase
     {
         //create dummy user for the test
         
-        $user = new User;
-        $user->email = $this->faker->email;
-        $user->name = $this->faker->name;
-        $user->date_of_birth = '1997-06-16';
-        $user->password = $this->faker->password;
-        $user->save();
+        $user = User::factory()->create();
 
         //create dummy headline for the test
-        $favorite = new Favorite;
-        $favorite->user_id = $user->id;
-        $favorite->source = 'Source Name';
-        $favorite->title = 'Article Title';
-        $favorite->description = 'Article Description';
-        $favorite->url = 'random_url';
-        $favorite->urlToImage = 'random_url';
-        $favorite->category = 'business';
-        $favorite->country = 'eg';
-        $favorite->save();
+        
+        $favorite = Favorite::factory()->create([
+            'user_id' => $user->id, //override the default user_id in the factory
+        ]);
 
         
         $response = $this->post('delete-favorite', [
@@ -64,12 +53,8 @@ class DeleteFavorites extends TestCase
     {
         //create dummy user for the test
         
-        $user = new User;
-        $user->email = $this->faker->email;
-        $user->name = $this->faker->name;
-        $user->date_of_birth = '1997-06-16';
-        $user->password = $this->faker->password;
-        $user->save();
+        
+        $user = User::factory()->create();
 
         //create dummy headline for the test
         $favorite = new Favorite;
