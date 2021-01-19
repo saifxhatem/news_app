@@ -21,6 +21,8 @@ class FavoriteController extends Controller
             'url' => 'required|max:500',
             'urlToImage' => 'required|max:500',
             'category' => 'required|max:255',
+            'country' => 'required|max:255',
+            
           ]);
 
         /*

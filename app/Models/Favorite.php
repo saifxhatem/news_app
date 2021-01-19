@@ -17,6 +17,9 @@ class Favorite extends Model
         'description',
         'url',
         'urlToImage',
+        'category',
+        'country',
+        
     ];
     //define relationship of favorites to user
     public function user()
