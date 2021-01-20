@@ -21129,6 +21129,7 @@ var render = function() {
                           "is-invalid": _vm.validation_errors.user_email_failed
                         },
                         attrs: {
+                          dusk: "user_email",
                           type: "text",
                           id: "email",
                           placeholder: "Ex: johnsmith@gmail.com"
@@ -21168,7 +21169,11 @@ var render = function() {
                           "is-invalid":
                             _vm.validation_errors.user_password_failed
                         },
-                        attrs: { type: "password", id: "password" },
+                        attrs: {
+                          dusk: "user_password",
+                          type: "password",
+                          id: "password"
+                        },
                         domProps: { value: _vm.formData.user_password },
                         on: {
                           input: function($event) {
@@ -21189,7 +21194,7 @@ var render = function() {
                       "button",
                       {
                         staticClass: "btn btn-primary",
-                        attrs: { type: "submit" }
+                        attrs: { dusk: "do_login", type: "submit" }
                       },
                       [_vm._v("Login")]
                     )
@@ -21276,6 +21281,7 @@ var render = function() {
                           "is-invalid": _vm.validation_errors.user_name_failed
                         },
                         attrs: {
+                          dusk: "user_name",
                           type: "text",
                           id: "user-name",
                           placeholder: "Ex: John Smith"
@@ -21317,6 +21323,7 @@ var render = function() {
                           "is-invalid": _vm.validation_errors.user_email_failed
                         },
                         attrs: {
+                          dusk: "user_email",
                           type: "email",
                           id: "email",
                           placeholder: "Ex: 19 Hosny El Ashmawy"
@@ -21357,7 +21364,7 @@ var render = function() {
                         class: {
                           "is-invalid": _vm.validation_errors.user_dob_failed
                         },
-                        attrs: { type: "date" },
+                        attrs: { dusk: "user_dob", type: "date" },
                         domProps: { value: _vm.formData.user_dob },
                         on: {
                           input: function($event) {
@@ -21681,7 +21688,7 @@ var render = function() {
       _c("br"),
       _c("br"),
       _vm._v(" "),
-      _c("login-form"),
+      _c("login-form", { attrs: { dusk: "login-component" } }),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
