@@ -1,6 +1,6 @@
 <template>
     
-    <registration-form/>
+    <registration-form dusk="registration-component"> </registration-form>
 
 </template>
 

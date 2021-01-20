@@ -29,7 +29,7 @@
                                     <input dusk="user_dob" type="date" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_dob_failed}" v-model="formData.user_dob">
                                 </div>
                                 <br>
-                                <button type="submit" class="btn btn-primary">Register</button>
+                                <button dusk="do_register" type="submit" class="btn btn-primary">Register</button>
                             </form>
                         </div>
                     </div>
