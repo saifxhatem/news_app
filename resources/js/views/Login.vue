@@ -1,7 +1,7 @@
 <template>
     <div>
         <br/><br/>
-        <login-form/>
+        <login-form dusk="login-component"></login-form>
         <br> <br>
         <center></center>
     </div>

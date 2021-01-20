@@ -22,15 +22,15 @@
                             <form @submit.prevent="validate_form" method="post"> <!-- When user clicks Login button, call validate_form() method -->
                                 <div class="form-group">
                                     <label for="user-email-label">Email </label>
-                                    <input type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_email_failed}" id="email" placeholder="Ex: johnsmith@gmail.com" v-model="formData.user_email" />
+                                    <input dusk="user_email" type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_email_failed}" id="email" placeholder="Ex: johnsmith@gmail.com" v-model="formData.user_email" />
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input type="password" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_password_failed}" id="password" v-model="formData.user_password" />
+                                    <input dusk="user_password" type="password" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_password_failed}" id="password" v-model="formData.user_password" />
                                 </div>
     
-                                <button type="submit" class="btn btn-primary">Login</button>
+                                <button dusk="do_login" type="submit" class="btn btn-primary">Login</button>
                             </form>
                         </div>
                     </div>
