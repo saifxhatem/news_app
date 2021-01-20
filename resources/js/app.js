@@ -42,6 +42,7 @@ const router = new VueRouter({
 Vue.component('error-alert', require('./components/ErrorAlert.vue').default);
 Vue.component('registration-form', require('./components/RegistrationForm.vue').default);
 Vue.component('login-form', require('./components/LoginForm.vue').default);
+Vue.component('news-loader', require('./components/NewsLoader.vue').default);
 
 
 
