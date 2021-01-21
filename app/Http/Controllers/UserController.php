@@ -6,6 +6,7 @@ use App\Models\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
+use App\Jobs\SendEmails;
 use Validator;
 
 class UserController extends Controller
@@ -38,8 +39,11 @@ class UserController extends Controller
           'user_name' => $user->name];
 
         //send the email
-
-        Mail::to($user->email)->send(new \App\Mail\Mailer($details));
+        
+        // Mail::to($user->email)->send(new \App\Mail\Mailer($details));
+        // return response("Registration successful", 200);
+        SendEmails::dispatch($user, $details);
+        //error_log('Some message here.');
         return response("Registration successful", 200);
     }
 
