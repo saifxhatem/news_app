@@ -30,7 +30,7 @@ class SaveHeadlineTest extends DuskTestCase
                     ->assertSee('Sports')
                     ->click('@choose_sports')
                     ->assertVue('topic', 'sports', '@news-component') //assert topic set correctly
-                    ->pause(5000)
+                    ->pause(1000)
                     ->assertVisible('@articles')
                     ->assertMissing('@save_headline_button');
         });
@@ -47,7 +47,7 @@ class SaveHeadlineTest extends DuskTestCase
                     ->type('@user_password', $user->password)
                     ->click('@do_login')
                     ->assertVueIsNot('show_error', true, '@login-component') //assert no errors on page
-                    ->pause(5000)
+                    ->pause(500)
                     ->assertDialogOpened('You have successfully logged in. You will now be redirected to the homepage.')
                     ->acceptDialog();
                     $this->assertEquals($browser->driver->getCurrentURL() , 'http://localhost:8000/#/'); //assert that user has been redirected after successful login
@@ -64,7 +64,7 @@ class SaveHeadlineTest extends DuskTestCase
                     ->assertSee('Sports')
                     ->click('@choose_sports')
                     ->assertVue('topic', 'sports', '@news-component') //assert topic set correctly
-                    ->pause(5000)
+                    ->pause(1000)
                     ->assertVisible('@articles')
                     ->assertVisible('@save_headline_button')
                     ->assertVisible('#save_headline_0')
