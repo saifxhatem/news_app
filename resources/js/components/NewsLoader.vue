@@ -15,48 +15,53 @@
                 <button dusk="choose_sports" @click="chosen_topic('sports')" type="button" class="btn btn-primary" :class="{ 'active' : topic == 'sports'}">Sports</button>
             </div>
         </center>
-    
+
         <br><br>
-        <div class="container-fluid">
-            <div dusk="articles" v-for="(article,index) in articles" :key="index">
-                <!-- display each article -->
-                <div class="row">
-                    <center>
-                        <div class="col-md-12">
-                            <h3>
-                                {{article.title}}
-    
-                            </h3>
-                            <!-- Since some articles do not have a given picture, in the case that they don't we assign one for aesthetic purposes -->
-                            <div v-if="article.urlToImage">
-                                <img :src="article.urlToImage" :width="200" :height="100">
+        <div id="loading_spinner" v-if="loading">
+            <fold></fold>
+        </div>
+        <div v-else>
+            <div class="container-fluid">
+                <div dusk="articles" v-for="(article,index) in articles" :key="index">
+                    <!-- display each article -->
+                    <div class="row">
+                        <center>
+                            <div class="col-md-12">
+                                <h3>
+                                    {{article.title}}
+        
+                                </h3>
+                                <!-- Since some articles do not have a given picture, in the case that they don't we assign one for aesthetic purposes -->
+                                <div v-if="article.urlToImage">
+                                    <img :src="article.urlToImage" :width="200" :height="100">
+                                </div>
+                                <div v-else>
+                                    <img src="https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png" :width="200" :height="100">
+                                </div>    
+                                <dl>
+                                    <dt>
+                                Snippet from article: <br> 
+                                {{article.description}}
+                            </dt>
+                                </dl>
                             </div>
-                            <div v-else>
-                                <img src="https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png" :width="200" :height="100">
-                            </div>    
-                            <dl>
-                                <dt>
-        					Snippet from article: <br> 
-                            {{article.description}}
-        				</dt>
-                            </dl>
-                        </div>
-                    </center>
+                        </center>
+                    </div>
+                    <div v-if="logged_in">
+                        
+                        <center>
+                            <!-- If article has not been saved, display option to save
+                                Else, make the button display "saved" -->
+                            <button dusk="save_headline_button" :id="'save_headline_' + index" v-if="!article.saved" @click="save_headline(article)" type="button" class="btn btn-primary">Save This Headline</button>
+                            <button dusk="saved_headline_button" :id="'saved_headline_' + index"  v-else type="button" class="btn btn-success">Saved ❤️</button>
+                        </center>
+                        
+                    </div>
+                    <br>
+                    <center>Full article: <br><a :href="article.url"><button class="btn btn-info">Read on {{article.source.name}}</button></a></center>
+                    <hr>
+        
                 </div>
-                <div v-if="logged_in">
-                    
-                    <center>
-                        <!-- If article has not been saved, display option to save
-                             Else, make the button display "saved" -->
-                        <button dusk="save_headline_button" :id="'save_headline_' + index" v-if="!article.saved" @click="save_headline(article)" type="button" class="btn btn-primary">Save This Headline</button>
-                        <button dusk="saved_headline_button" :id="'saved_headline_' + index"  v-else type="button" class="btn btn-success">Saved ❤️</button>
-                    </center>
-                    
-                </div>
-                <br>
-                <center>Full article: <br><a :href="article.url"><button class="btn btn-info">Read on {{article.source.name}}</button></a></center>
-                <hr>
-    
             </div>
         </div>
     </div>
@@ -70,7 +75,8 @@ export default {
             articles: [],
             country_code: null,
             topic: null,
-            logged_in: null
+            logged_in: null,
+            loading: false
         }
     },
     mounted() {
@@ -84,12 +90,14 @@ export default {
     },
     methods: {
         load_articles: function() {
+            this.loading = true;
             let url = '/load-news/' + this.country_code + '/' + this.topic;
             axios.get(url)
                 .then((response) => {
                     //check existence of data before assigning
                     if (response.data){
                         //api call successful, assign data
+                        this.loading = false;
                         this.articles = response.data;
                     }
                 })

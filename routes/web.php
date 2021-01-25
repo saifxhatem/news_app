@@ -28,3 +28,4 @@ Route::get('load-news/{country_code}/{topic}', [NewsController::class, 'load_new
 Route::post('add-to-favorites', [FavoriteController::class, 'add_favorite']);
 Route::post('load-favorites', [FavoriteController::class, 'load_favorite']);
 Route::post('delete-favorite', [FavoriteController::class, 'delete_favorite']);
+Route::post('get-favorite-count', [FavoriteController::class, 'count_favorites']);
