@@ -16,20 +16,20 @@
                             <form @submit.prevent="validate_form" method="post"> <!-- When user clicks Register button, call validate_form() method -->
                                 <div class="form-group">
                                     <label for="user-name-label">Full Name </label>
-                                    <input type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_name_failed}" id="user-name" placeholder="Ex: John Smith" v-model="formData.user_name" />
+                                    <input dusk="user_name" type="text" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_name_failed}" id="user-name" placeholder="Ex: John Smith" v-model="formData.user_name" />
                                 </div>
                                 <br>
                                 <div class="form-group">
                                     <label for="new-address-label">Email</label>
-                                    <input type="email" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_email_failed}" id="email" placeholder="Ex: 19 Hosny El Ashmawy" v-model="formData.user_email" />
+                                    <input dusk="user_email" type="email" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_email_failed}" id="email" placeholder="Ex: 19 Hosny El Ashmawy" v-model="formData.user_email" />
                                 </div>
                                 <br>
                                 <div class="form-group">
                                     <label for="new-address-label">Date of Birth</label>
-                                    <input type="date" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_dob_failed}" v-model="formData.user_dob">
+                                    <input dusk="user_dob" type="date" class="form-control" v-bind:class="{ 'is-invalid' : validation_errors.user_dob_failed}" v-model="formData.user_dob">
                                 </div>
                                 <br>
-                                <button type="submit" class="btn btn-primary">Register</button>
+                                <button dusk="do_register" type="submit" class="btn btn-primary">Register</button>
                             </form>
                         </div>
                     </div>
