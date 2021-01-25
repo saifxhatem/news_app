@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Favorite;
+use App\Rules\FilterRules;
+
 
 class FavoriteController extends Controller
 {
@@ -46,13 +48,30 @@ class FavoriteController extends Controller
     {
         //first we validate our input, need to make sure that the user is valid before we can load their favorites
         $validated = $request->validate([
-            'user_id' => 'required|exists:App\Models\User,id'
+            'user_id' => 'required|exists:App\Models\User,id',
+            'filter' => [
+                'required',
+                new FilterRules()
+            ],
+            
         ]);
         /*
         validation passed, find user to load their favorites
         */
-        $favorites = Favorite::where('user_id', $request->user_id)->get();
-        return $favorites;
+        
+        if ($request->filter == 'all') {
+                $favorites = Favorite::where('user_id', $request->user_id)->get();
+                return $favorites;
+        }
+        else {
+            $favorites = Favorite::where('user_id', $request->user_id)
+                ->where(function ($query) use ($request) {
+                    $query->where('country', $request->filter)
+                    ->orWhere('category', $request->filter);
+                })->get();
+                if ($favorites->count() < 1) return response ("User has no favorites from " . $request->filter, 216);
+                    else return $favorites;
+        }
     }
 
     public function delete_favorite(Request $request){
@@ -65,4 +84,18 @@ class FavoriteController extends Controller
         Favorite::destroy($request->article_id); //since we know the ID and checked that it exists, we do not need to load the object since we can delete it directly
         return response("Headline removed successfully", 200);   
     }
+
+    public function count_favorites(request $request){
+        $validated = $request->validate([
+            'user_id' => 'required|exists:App\Models\User,id',
+        ]);
+
+        $favorite_count = Favorite::where('user_id', $request->user_id)->count();
+        if ($favorite_count < 1) {
+            return response("User has no favorites", 215);
+        }
+        else return response("User has favorites", 200);
+    }
+
+    
 }

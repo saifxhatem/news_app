@@ -4,6 +4,8 @@ require('./bootstrap');
 window.Vue = require('vue');
 import VueRouter from 'vue-router'
 import VueSession from 'vue-session'
+import VueSpinners from 'vue-spinners'
+
 
 //import views
 import Login from './views/Login.vue'
@@ -17,6 +19,8 @@ import Favorites from './views/Favorites.vue'
 //use vue-router and vue-session
 Vue.use(VueRouter)
 Vue.use(VueSession)
+Vue.use(VueSpinners)
+
 
 
 const routes = [
