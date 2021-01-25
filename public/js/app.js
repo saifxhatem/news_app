@@ -2054,6 +2054,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2061,8 +2070,10 @@ __webpack_require__.r(__webpack_exports__);
       user_id: null,
       sort_by: null,
       //used to specify which articles to show based on user's filter pref
-      no_articles: null //flag to signal that the user has no saved articles
-
+      no_articles: null,
+      //flag to signal that the user has no saved articles
+      no_articles_in_filter: null,
+      loading: true
     };
   },
   beforeCreate: function beforeCreate() {
@@ -2075,22 +2086,24 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     //get user's id and load their favorited articles
     this.user_id = this.$session.get('user_id');
-    this.load_articles();
+    this.get_favorites_count();
+    this.loading = true;
   },
   methods: {
     load_articles: function load_articles() {
       var _this = this;
 
+      this.loading = true;
+      this.no_articles_in_filter = false;
+      this.articles = [];
       axios.post('load-favorites', {
-        user_id: this.user_id
+        user_id: this.user_id,
+        filter: this.sort_by
       }).then(function (response) {
-        //check if user has any saved articles
-        if (response.data === undefined || response.data.length == 0) {
-          _this.no_articles = true;
-        }
-
-        if (response.data) //check existence of data before assigning
+        if (response.status == 216) _this.no_articles_in_filter = true;
+        if (response.data && _this.no_articles_in_filter == false) //check existence of data before assigning
           _this.articles = response.data;
+        _this.loading = false;
       })["catch"](function (error) {});
     },
     unfavorite: function unfavorite(article) {
@@ -2103,6 +2116,22 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.$set(article, 'deleted', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
 
+      })["catch"](function (error) {});
+    },
+    get_favorites_count: function get_favorites_count() {
+      var _this3 = this;
+
+      axios.post('get-favorite-count', {
+        //send the request to delete the article the user wants to remove
+        user_id: this.user_id
+      }).then(function (response) {
+        if (response.status === 215) {
+          _this3.no_articles = true;
+          _this3.loading = false;
+          console.log("user has no favorites");
+        }
+
+        _this3.loading = false;
       })["catch"](function (error) {});
     }
   }
@@ -2326,13 +2355,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       articles: [],
       country_code: null,
       topic: null,
-      logged_in: null
+      logged_in: null,
+      loading: false
     };
   },
   mounted: function mounted() {
@@ -2347,11 +2382,13 @@ __webpack_require__.r(__webpack_exports__);
     load_articles: function load_articles() {
       var _this = this;
 
+      this.loading = true;
       var url = '/load-news/' + this.country_code + '/' + this.topic;
       axios.get(url).then(function (response) {
         //check existence of data before assigning
         if (response.data) {
           //api call successful, assign data
+          _this.loading = false;
           _this.articles = response.data;
         }
       })["catch"](function (error) {});
@@ -2731,6 +2768,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-spinners/dist/vue-spinners.css":
+/*!*****************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-spinners/dist/vue-spinners.css ***!
+  \*****************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.spinner[data-v-168a067e] {\n  width: 40px;\n  height: 40px;\n  background-color: #333;\n\n  margin: 100px auto;\n  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;\n  animation: sk-rotateplane 1.2s infinite ease-in-out;\n}\n@-webkit-keyframes sk-rotateplane {\n0% {\n    -webkit-transform: perspective(120px)\n}\n50% {\n    -webkit-transform: perspective(120px) rotateY(180deg)\n}\n100% {\n    -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg)\n}\n}\n@keyframes sk-rotateplane {\n0% {\n    transform: perspective(120px) rotateX(0deg) rotateY(0deg);\n    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)\n}\n50% {\n    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\n    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)\n}\n100% {\n    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n}\n}\n\n.spinner[data-v-ae580a66] {\n  margin: 100px auto;\n  width: 50px;\n  height: 40px;\n  text-align: center;\n  font-size: 10px;\n}\n.spinner>div[data-v-ae580a66] {\n  background-color: #333;\n  height: 100%;\n  width: 6px;\n  display: inline-block;\n\n  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;\n  animation: sk-stretchdelay 1.2s infinite ease-in-out;\n}\n.spinner .rect2[data-v-ae580a66] {\n  -webkit-animation-delay: -1.1s;\n  animation-delay: -1.1s;\n}\n.spinner .rect3[data-v-ae580a66] {\n  -webkit-animation-delay: -1.0s;\n  animation-delay: -1.0s;\n}\n.spinner .rect4[data-v-ae580a66] {\n  -webkit-animation-delay: -0.9s;\n  animation-delay: -0.9s;\n}\n.spinner .rect5[data-v-ae580a66] {\n  -webkit-animation-delay: -0.8s;\n  animation-delay: -0.8s;\n}\n@-webkit-keyframes sk-stretchdelay {\n0%,\n  40%,\n  100% {\n    -webkit-transform: scaleY(0.4)\n}\n20% {\n    -webkit-transform: scaleY(1.0)\n}\n}\n@keyframes sk-stretchdelay {\n0%,\n  40%,\n  100% {\n    transform: scaleY(0.4);\n    -webkit-transform: scaleY(0.4);\n}\n20% {\n    transform: scaleY(1.0);\n    -webkit-transform: scaleY(1.0);\n}\n}\n\n\n.spinner[data-v-6b9f29ee] {\n  width: 40px;\n  height: 40px;\n  margin: 100px auto;\n  background-color: #333;\n\n  border-radius: 100%;\n  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;\n  animation: sk-scaleout 1.0s infinite ease-in-out;\n}\n@-webkit-keyframes sk-scaleout {\n0% {\n    -webkit-transform: scale(0)\n}\n100% {\n    -webkit-transform: scale(1.0);\n    opacity: 0;\n}\n}\n@keyframes sk-scaleout {\n0% {\n    -webkit-transform: scale(0);\n    transform: scale(0);\n}\n100% {\n    -webkit-transform: scale(1.0);\n    transform: scale(1.0);\n    opacity: 0;\n}\n}\n\n\n.sk-folding-cube[data-v-02553f9a] {\n  margin: 20px auto;\n  width: 40px;\n  height: 40px;\n  position: relative;\n  -webkit-transform: rotateZ(45deg);\n  transform: rotateZ(45deg);\n}\n.sk-folding-cube .sk-cube[data-v-02553f9a] {\n  float: left;\n  width: 50%;\n  height: 50%;\n  position: relative;\n  -webkit-transform: scale(1.1);\n  -ms-transform: scale(1.1);\n  transform: scale(1.1);\n}\n.sk-folding-cube .sk-cube[data-v-02553f9a]:before {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: #333;\n  -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;\n  animation: sk-foldCubeAngle 2.4s infinite linear both;\n  -webkit-transform-origin: 100% 100%;\n  -ms-transform-origin: 100% 100%;\n  transform-origin: 100% 100%;\n}\n.sk-folding-cube .sk-cube2[data-v-02553f9a] {\n  -webkit-transform: scale(1.1) rotateZ(90deg);\n  transform: scale(1.1) rotateZ(90deg);\n}\n.sk-folding-cube .sk-cube3[data-v-02553f9a] {\n  -webkit-transform: scale(1.1) rotateZ(180deg);\n  transform: scale(1.1) rotateZ(180deg);\n}\n.sk-folding-cube .sk-cube4[data-v-02553f9a] {\n  -webkit-transform: scale(1.1) rotateZ(270deg);\n  transform: scale(1.1) rotateZ(270deg);\n}\n.sk-folding-cube .sk-cube2[data-v-02553f9a]:before {\n  -webkit-animation-delay: 0.3s;\n  animation-delay: 0.3s;\n}\n.sk-folding-cube .sk-cube3[data-v-02553f9a]:before {\n  -webkit-animation-delay: 0.6s;\n  animation-delay: 0.6s;\n}\n.sk-folding-cube .sk-cube4[data-v-02553f9a]:before {\n  -webkit-animation-delay: 0.9s;\n  animation-delay: 0.9s;\n}\n@-webkit-keyframes sk-foldCubeAngle {\n0%,\n  10% {\n    -webkit-transform: perspective(140px) rotateX(-180deg);\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%,\n  75% {\n    -webkit-transform: perspective(140px) rotateX(0deg);\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%,\n  100% {\n    -webkit-transform: perspective(140px) rotateY(180deg);\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n@keyframes sk-foldCubeAngle {\n0%,\n  10% {\n    -webkit-transform: perspective(140px) rotateX(-180deg);\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%,\n  75% {\n    -webkit-transform: perspective(140px) rotateX(0deg);\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%,\n  100% {\n    -webkit-transform: perspective(140px) rotateY(180deg);\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n\n\n.spinner[data-v-12edc234] {\n  margin: 100px auto;\n  width: 40px;\n  height: 40px;\n  position: relative;\n}\n.cube1[data-v-12edc234],\n.cube2[data-v-12edc234] {\n  background-color: #333;\n  width: 15px;\n  height: 15px;\n  position: absolute;\n  top: 0;\n  left: 0;\n\n  -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;\n  animation: sk-cubemove 1.8s infinite ease-in-out;\n}\n.cube2[data-v-12edc234] {\n  -webkit-animation-delay: -0.9s;\n  animation-delay: -0.9s;\n}\n@-webkit-keyframes sk-cubemove {\n25% {\n    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5)\n}\n50% {\n    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg)\n}\n75% {\n    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5)\n}\n100% {\n    -webkit-transform: rotate(-360deg)\n}\n}\n@keyframes sk-cubemove {\n25% {\n    transform: translateX(42px) rotate(-90deg) scale(0.5);\n    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);\n}\n50% {\n    transform: translateX(42px) translateY(42px) rotate(-179deg);\n    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);\n}\n50.1% {\n    transform: translateX(42px) translateY(42px) rotate(-180deg);\n    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);\n}\n75% {\n    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);\n    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);\n}\n100% {\n    transform: rotate(-360deg);\n    -webkit-transform: rotate(-360deg);\n}\n}\n\n\n.spinner[data-v-76b46833] {\n  width: 40px;\n  height: 40px;\n\n  position: relative;\n  margin: 100px auto;\n}\n.double-bounce1[data-v-76b46833],\n.double-bounce2[data-v-76b46833] {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n\n  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;\n  animation: sk-bounce 2.0s infinite ease-in-out;\n}\n.double-bounce2[data-v-76b46833] {\n  -webkit-animation-delay: -1.0s;\n  animation-delay: -1.0s;\n}\n@-webkit-keyframes sk-bounce {\n0%,\n  100% {\n    -webkit-transform: scale(0.0)\n}\n50% {\n    -webkit-transform: scale(1.0)\n}\n}\n@keyframes sk-bounce {\n0%,\n  100% {\n    transform: scale(0.0);\n    -webkit-transform: scale(0.0);\n}\n50% {\n    transform: scale(1.0);\n    -webkit-transform: scale(1.0);\n}\n}\n\n\n.sk-fading-circle[data-v-1e7464eb] {\n  margin: 100px auto;\n  width: 40px;\n  height: 40px;\n  position: relative;\n}\n.sk-fading-circle .sk-circle[data-v-1e7464eb] {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n.sk-fading-circle .sk-circle[data-v-1e7464eb]:before {\n  content: '';\n  display: block;\n  margin: 0 auto;\n  width: 15%;\n  height: 15%;\n  background-color: #333;\n  border-radius: 100%;\n  -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;\n  animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;\n}\n.sk-fading-circle .sk-circle2[data-v-1e7464eb] {\n  -webkit-transform: rotate(30deg);\n  -ms-transform: rotate(30deg);\n  transform: rotate(30deg);\n}\n.sk-fading-circle .sk-circle3[data-v-1e7464eb] {\n  -webkit-transform: rotate(60deg);\n  -ms-transform: rotate(60deg);\n  transform: rotate(60deg);\n}\n.sk-fading-circle .sk-circle4[data-v-1e7464eb] {\n  -webkit-transform: rotate(90deg);\n  -ms-transform: rotate(90deg);\n  transform: rotate(90deg);\n}\n.sk-fading-circle .sk-circle5[data-v-1e7464eb] {\n  -webkit-transform: rotate(120deg);\n  -ms-transform: rotate(120deg);\n  transform: rotate(120deg);\n}\n.sk-fading-circle .sk-circle6[data-v-1e7464eb] {\n  -webkit-transform: rotate(150deg);\n  -ms-transform: rotate(150deg);\n  transform: rotate(150deg);\n}\n.sk-fading-circle .sk-circle7[data-v-1e7464eb] {\n  -webkit-transform: rotate(180deg);\n  -ms-transform: rotate(180deg);\n  transform: rotate(180deg);\n}\n.sk-fading-circle .sk-circle8[data-v-1e7464eb] {\n  -webkit-transform: rotate(210deg);\n  -ms-transform: rotate(210deg);\n  transform: rotate(210deg);\n}\n.sk-fading-circle .sk-circle9[data-v-1e7464eb] {\n  -webkit-transform: rotate(240deg);\n  -ms-transform: rotate(240deg);\n  transform: rotate(240deg);\n}\n.sk-fading-circle .sk-circle10[data-v-1e7464eb] {\n  -webkit-transform: rotate(270deg);\n  -ms-transform: rotate(270deg);\n  transform: rotate(270deg);\n}\n.sk-fading-circle .sk-circle11[data-v-1e7464eb] {\n  -webkit-transform: rotate(300deg);\n  -ms-transform: rotate(300deg);\n  transform: rotate(300deg);\n}\n.sk-fading-circle .sk-circle12[data-v-1e7464eb] {\n  -webkit-transform: rotate(330deg);\n  -ms-transform: rotate(330deg);\n  transform: rotate(330deg);\n}\n.sk-fading-circle .sk-circle2[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -1.1s;\n  animation-delay: -1.1s;\n}\n.sk-fading-circle .sk-circle3[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -1s;\n  animation-delay: -1s;\n}\n.sk-fading-circle .sk-circle4[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.9s;\n  animation-delay: -0.9s;\n}\n.sk-fading-circle .sk-circle5[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.8s;\n  animation-delay: -0.8s;\n}\n.sk-fading-circle .sk-circle6[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.7s;\n  animation-delay: -0.7s;\n}\n.sk-fading-circle .sk-circle7[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.6s;\n  animation-delay: -0.6s;\n}\n.sk-fading-circle .sk-circle8[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.5s;\n  animation-delay: -0.5s;\n}\n.sk-fading-circle .sk-circle9[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.4s;\n  animation-delay: -0.4s;\n}\n.sk-fading-circle .sk-circle10[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.3s;\n  animation-delay: -0.3s;\n}\n.sk-fading-circle .sk-circle11[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.2s;\n  animation-delay: -0.2s;\n}\n.sk-fading-circle .sk-circle12[data-v-1e7464eb]:before {\n  -webkit-animation-delay: -0.1s;\n  animation-delay: -0.1s;\n}\n@-webkit-keyframes sk-circleFadeDelay {\n0%,\n  39%,\n  100% {\n    opacity: 0;\n}\n40% {\n    opacity: 1;\n}\n}\n@keyframes sk-circleFadeDelay {\n0%,\n  39%,\n  100% {\n    opacity: 0;\n}\n40% {\n    opacity: 1;\n}\n}\n", ""]);
+
+// exports
+
 
 /***/ }),
 
@@ -21114,6 +21170,23 @@ var render = function() {
   return _c("div", [
     _c("br"),
     _vm._v(" "),
+    _vm.loading ? _c("div", [_c("fold")], 1) : _vm._e(),
+    _vm._v(" "),
+    _vm.no_articles_in_filter
+      ? _c(
+          "div",
+          [
+            _c("center", [
+              _c("h2", [
+                _vm._v(" You don't have any articles in this section. "),
+                _c("br")
+              ])
+            ])
+          ],
+          1
+        )
+      : _vm._e(),
+    _vm._v(" "),
     _vm.no_articles
       ? _c(
           "div",
@@ -21143,19 +21216,10 @@ var render = function() {
           ],
           1
         )
-      : _vm._e(),
-    _vm._v(" "),
-    !_vm.no_articles
-      ? _c(
+      : _c(
           "div",
           [
-            _c("center", [
-              _c("h2", [
-                _vm._v("Saved Headlines "),
-                _c("br"),
-                _vm._v(" Filter saved articles by:")
-              ])
-            ]),
+            _c("center", [_c("h2", [_vm._v("Filter saved articles by:")])]),
             _vm._v(" "),
             _c("center", [
               _c(
@@ -21171,19 +21235,22 @@ var render = function() {
                   ],
                   attrs: { dusk: "filter_selector" },
                   on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.sort_by = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.sort_by = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      _vm.load_articles
+                    ]
                   }
                 },
                 [
@@ -21215,8 +21282,7 @@ var render = function() {
             ])
           ],
           1
-        )
-      : _vm._e(),
+        ),
     _vm._v(" "),
     _c("br"),
     _c("br"),
@@ -21226,99 +21292,85 @@ var render = function() {
       { staticClass: "container-fluid" },
       _vm._l(_vm.articles, function(article, index) {
         return _c("div", { key: index }, [
-          _vm.sort_by === article.category ||
-          _vm.sort_by === article.country ||
-          _vm.sort_by === "all"
-            ? _c("div", [
-                !article.deleted
-                  ? _c("div", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-danger",
-                          staticStyle: { float: "right" },
-                          attrs: {
-                            id: "delete_article_" + index,
-                            type: "button"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.unfavorite(article)
+          _c("div", [
+            !article.deleted
+              ? _c("div", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      staticStyle: { float: "right" },
+                      attrs: { id: "delete_article_" + index, type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.unfavorite(article)
+                        }
+                      }
+                    },
+                    [_vm._v("X")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "row", attrs: { id: "article_" + index } },
+                    [
+                      _c("center", [
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _c("h3", [
+                            _vm._v(
+                              "\n                                    " +
+                                _vm._s(article.title) +
+                                " -\n                                    "
+                            ),
+                            _c("h1", [
+                              _vm._v(
+                                _vm._s(article.country) +
+                                  " - " +
+                                  _vm._s(article.category)
+                              )
+                            ])
+                          ]),
+                          _c("img", {
+                            attrs: {
+                              src: article.urlToImage,
+                              width: 200,
+                              height: 100
                             }
-                          }
-                        },
-                        [_vm._v("X")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "row",
-                          attrs: { id: "article_" + index }
-                        },
-                        [
-                          _c("center", [
-                            _c("div", { staticClass: "col-md-12" }, [
-                              _c("h3", [
-                                _vm._v(
-                                  "\n                                    " +
-                                    _vm._s(article.title) +
-                                    " -\n                                    "
-                                ),
-                                _c("h1", [
-                                  _vm._v(
-                                    _vm._s(article.country) +
-                                      " - " +
-                                      _vm._s(article.category)
-                                  )
-                                ])
-                              ]),
-                              _c("img", {
-                                attrs: {
-                                  src: article.urlToImage,
-                                  width: 200,
-                                  height: 100
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("dl", [
-                                _c("dt", [
-                                  _vm._v(
-                                    "\n                                        Snippet from article: "
-                                  ),
-                                  _c("br"),
-                                  _vm._v(
-                                    " \n                                        " +
-                                      _vm._s(article.description) +
-                                      "\n                                        "
-                                  ),
-                                  _c("br"),
-                                  _vm._v("Full article: "),
-                                  _c("br"),
-                                  _c("a", { attrs: { href: article.url } }, [
-                                    _c(
-                                      "button",
-                                      { staticClass: "btn btn-primary" },
-                                      [
-                                        _vm._v(
-                                          "Read on " + _vm._s(article.source)
-                                        )
-                                      ]
-                                    )
-                                  ])
-                                ])
+                          }),
+                          _vm._v(" "),
+                          _c("dl", [
+                            _c("dt", [
+                              _vm._v(
+                                "\n                                            Snippet from article: "
+                              ),
+                              _c("br"),
+                              _vm._v(
+                                " \n                                            " +
+                                  _vm._s(article.description) +
+                                  "\n                                            "
+                              ),
+                              _c("br"),
+                              _vm._v("Full article: "),
+                              _c("br"),
+                              _c("a", { attrs: { href: article.url } }, [
+                                _c(
+                                  "button",
+                                  { staticClass: "btn btn-primary" },
+                                  [_vm._v("Read on " + _vm._s(article.source))]
+                                )
                               ])
                             ])
                           ])
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("hr")
-                    ])
-                  : _vm._e()
-              ])
-            : _vm._e()
+                        ])
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("hr")
+                ])
+              : _vm._e()
+          ])
         ])
       }),
       0
@@ -21600,126 +21652,132 @@ var render = function() {
       _c("br"),
       _c("br"),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "container-fluid" },
-        _vm._l(_vm.articles, function(article, index) {
-          return _c(
-            "div",
-            { key: index, attrs: { dusk: "articles" } },
-            [
-              _c(
-                "div",
-                { staticClass: "row" },
-                [
-                  _c("center", [
-                    _c("div", { staticClass: "col-md-12" }, [
-                      _c("h3", [
-                        _vm._v(
-                          "\n                            " +
-                            _vm._s(article.title) +
-                            "\n\n                        "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      article.urlToImage
-                        ? _c("div", [
-                            _c("img", {
-                              attrs: {
-                                src: article.urlToImage,
-                                width: 200,
-                                height: 100
-                              }
-                            })
+      _vm.loading
+        ? _c("div", { attrs: { id: "loading_spinner" } }, [_c("fold")], 1)
+        : _c("div", [
+            _c(
+              "div",
+              { staticClass: "container-fluid" },
+              _vm._l(_vm.articles, function(article, index) {
+                return _c(
+                  "div",
+                  { key: index, attrs: { dusk: "articles" } },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "row" },
+                      [
+                        _c("center", [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c("h3", [
+                              _vm._v(
+                                "\n                                " +
+                                  _vm._s(article.title) +
+                                  "\n    \n                            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            article.urlToImage
+                              ? _c("div", [
+                                  _c("img", {
+                                    attrs: {
+                                      src: article.urlToImage,
+                                      width: 200,
+                                      height: 100
+                                    }
+                                  })
+                                ])
+                              : _c("div", [
+                                  _c("img", {
+                                    attrs: {
+                                      src:
+                                        "https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png",
+                                      width: 200,
+                                      height: 100
+                                    }
+                                  })
+                                ]),
+                            _vm._v(" "),
+                            _c("dl", [
+                              _c("dt", [
+                                _vm._v(
+                                  "\n                            Snippet from article: "
+                                ),
+                                _c("br"),
+                                _vm._v(
+                                  " \n                            " +
+                                    _vm._s(article.description) +
+                                    "\n                        "
+                                )
+                              ])
+                            ])
                           ])
-                        : _c("div", [
-                            _c("img", {
-                              attrs: {
-                                src:
-                                  "https://cdn3.iconfinder.com/data/icons/ballicons-reloaded-free/512/icon-70-512.png",
-                                width: 200,
-                                height: 100
-                              }
-                            })
-                          ]),
-                      _vm._v(" "),
-                      _c("dl", [
-                        _c("dt", [
-                          _vm._v("\n    \t\t\t\t\tSnippet from article: "),
-                          _c("br"),
-                          _vm._v(
-                            " \n                        " +
-                              _vm._s(article.description) +
-                              "\n    \t\t\t\t"
-                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _vm.logged_in
+                      ? _c(
+                          "div",
+                          [
+                            _c("center", [
+                              !article.saved
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary",
+                                      attrs: {
+                                        dusk: "save_headline_button",
+                                        id: "save_headline_" + index,
+                                        type: "button"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.save_headline(article)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Save This Headline")]
+                                  )
+                                : _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-success",
+                                      attrs: {
+                                        dusk: "saved_headline_button",
+                                        id: "saved_headline_" + index,
+                                        type: "button"
+                                      }
+                                    },
+                                    [_vm._v("Saved ❤️")]
+                                  )
+                            ])
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("center", [
+                      _vm._v("Full article: "),
+                      _c("br"),
+                      _c("a", { attrs: { href: article.url } }, [
+                        _c("button", { staticClass: "btn btn-info" }, [
+                          _vm._v("Read on " + _vm._s(article.source.name))
                         ])
                       ])
-                    ])
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _vm.logged_in
-                ? _c(
-                    "div",
-                    [
-                      _c("center", [
-                        !article.saved
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary",
-                                attrs: {
-                                  dusk: "save_headline_button",
-                                  id: "save_headline_" + index,
-                                  type: "button"
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.save_headline(article)
-                                  }
-                                }
-                              },
-                              [_vm._v("Save This Headline")]
-                            )
-                          : _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                attrs: {
-                                  dusk: "saved_headline_button",
-                                  id: "saved_headline_" + index,
-                                  type: "button"
-                                }
-                              },
-                              [_vm._v("Saved ❤️")]
-                            )
-                      ])
-                    ],
-                    1
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("center", [
-                _vm._v("Full article: "),
-                _c("br"),
-                _c("a", { attrs: { href: article.url } }, [
-                  _c("button", { staticClass: "btn btn-info" }, [
-                    _vm._v("Read on " + _vm._s(article.source.name))
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("hr")
-            ],
-            1
-          )
-        }),
-        0
-      )
+                    ]),
+                    _vm._v(" "),
+                    _c("hr")
+                  ],
+                  1
+                )
+              }),
+              0
+            )
+          ])
     ],
     1
   )
@@ -25417,6 +25475,70 @@ VueSession.install = function(Vue, options) {
 };
 
 module.exports = VueSession;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-spinners/dist/vue-spinners.common.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/vue-spinners/dist/vue-spinners.common.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {module.exports=function(modules){var installedModules={};function __webpack_require__(moduleId){if(installedModules[moduleId])return installedModules[moduleId].exports;var module=installedModules[moduleId]={i:moduleId,l:!1,exports:{}};return modules[moduleId].call(module.exports,module,module.exports,__webpack_require__),module.l=!0,module.exports}return __webpack_require__.m=modules,__webpack_require__.c=installedModules,__webpack_require__.i=function(value){return value},__webpack_require__.d=function(exports,name,getter){__webpack_require__.o(exports,name)||Object.defineProperty(exports,name,{configurable:!1,enumerable:!0,get:getter})},__webpack_require__.n=function(module){var getter=module&&module.__esModule?function(){return module.default}:function(){return module};return __webpack_require__.d(getter,"a",getter),getter},__webpack_require__.o=function(object,property){return Object.prototype.hasOwnProperty.call(object,property)},__webpack_require__.p="",__webpack_require__(__webpack_require__.s=15)}([function(module,exports){module.exports=function(rawScriptExports,compiledTemplate,scopeId,cssModules){var esModule,scriptExports=rawScriptExports=rawScriptExports||{},type=typeof rawScriptExports.default;"object"!==type&&"function"!==type||(esModule=rawScriptExports,scriptExports=rawScriptExports.default);var options="function"==typeof scriptExports?scriptExports.options:scriptExports;if(compiledTemplate&&(options.render=compiledTemplate.render,options.staticRenderFns=compiledTemplate.staticRenderFns),scopeId&&(options._scopeId=scopeId),cssModules){var computed=options.computed||(options.computed={});Object.keys(cssModules).forEach(function(key){var module=cssModules[key];computed[key]=function(){return module}})}return{esModule:esModule,exports:scriptExports,options:options}}},function(module,exports,__webpack_require__){__webpack_require__(21);var Component=__webpack_require__(0)(__webpack_require__(8),__webpack_require__(28),"data-v-76b46833",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(19);var Component=__webpack_require__(0)(__webpack_require__(9),__webpack_require__(26),"data-v-1e7464eb",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(17);var Component=__webpack_require__(0)(__webpack_require__(10),__webpack_require__(24),"data-v-12edc234",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(16);var Component=__webpack_require__(0)(__webpack_require__(11),__webpack_require__(23),"data-v-02553f9a",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(20);var Component=__webpack_require__(0)(__webpack_require__(12),__webpack_require__(27),"data-v-6b9f29ee",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(18);var Component=__webpack_require__(0)(__webpack_require__(13),__webpack_require__(25),"data-v-168a067e",null);module.exports=Component.exports},function(module,exports,__webpack_require__){__webpack_require__(22);var Component=__webpack_require__(0)(__webpack_require__(14),__webpack_require__(29),"data-v-ae580a66",null);module.exports=Component.exports},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"50"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"BounceSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"40"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"CircleSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"40"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"CubeSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"40"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"FoldSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"40"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"PulseSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"40"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"SquareSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.default={props:{loading:{type:Boolean,default:!0},color:{type:String,default:"#333"},width:{type:String,default:"50"},height:{type:String,default:"40"}},data(){return{isLoading:this.loading,styles:{backgroundColor:this.color,width:this.width+"px",height:this.height+"px"}}},name:"TileSpinner"}},function(module,__webpack_exports__,__webpack_require__){"use strict";Object.defineProperty(__webpack_exports__,"__esModule",{value:!0}),__webpack_exports__.install=install;var __WEBPACK_IMPORTED_MODULE_0__components_SquareSpinner_vue__=__webpack_require__(6),__WEBPACK_IMPORTED_MODULE_0__components_SquareSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_SquareSpinner_vue__),__WEBPACK_IMPORTED_MODULE_1__components_TileSpinner_vue__=__webpack_require__(7),__WEBPACK_IMPORTED_MODULE_1__components_TileSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_TileSpinner_vue__),__WEBPACK_IMPORTED_MODULE_2__components_PulseSpinner_vue__=__webpack_require__(5),__WEBPACK_IMPORTED_MODULE_2__components_PulseSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_PulseSpinner_vue__),__WEBPACK_IMPORTED_MODULE_3__components_FoldSpinner_vue__=__webpack_require__(4),__WEBPACK_IMPORTED_MODULE_3__components_FoldSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_FoldSpinner_vue__),__WEBPACK_IMPORTED_MODULE_4__components_CubeSpinner_vue__=__webpack_require__(3),__WEBPACK_IMPORTED_MODULE_4__components_CubeSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_CubeSpinner_vue__),__WEBPACK_IMPORTED_MODULE_5__components_BounceSpinner_vue__=__webpack_require__(1),__WEBPACK_IMPORTED_MODULE_5__components_BounceSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_BounceSpinner_vue__),__WEBPACK_IMPORTED_MODULE_6__components_CircleSpinner_vue__=__webpack_require__(2),__WEBPACK_IMPORTED_MODULE_6__components_CircleSpinner_vue___default=__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_CircleSpinner_vue__);function install(Vue){Vue.component("square",__WEBPACK_IMPORTED_MODULE_0__components_SquareSpinner_vue___default.a),Vue.component("tile",__WEBPACK_IMPORTED_MODULE_1__components_TileSpinner_vue___default.a),Vue.component("pulse",__WEBPACK_IMPORTED_MODULE_2__components_PulseSpinner_vue___default.a),Vue.component("fold",__WEBPACK_IMPORTED_MODULE_3__components_FoldSpinner_vue___default.a),Vue.component("cube",__WEBPACK_IMPORTED_MODULE_4__components_CubeSpinner_vue___default.a),Vue.component("bounce",__WEBPACK_IMPORTED_MODULE_5__components_BounceSpinner_vue___default.a),Vue.component("circle-spin",__WEBPACK_IMPORTED_MODULE_6__components_CircleSpinner_vue___default.a)}__webpack_require__.d(__webpack_exports__,"SquareSpinner",function(){return __WEBPACK_IMPORTED_MODULE_0__components_SquareSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"TileSpinner",function(){return __WEBPACK_IMPORTED_MODULE_1__components_TileSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"PulseSpinner",function(){return __WEBPACK_IMPORTED_MODULE_2__components_PulseSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"FoldSpinner",function(){return __WEBPACK_IMPORTED_MODULE_3__components_FoldSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"CubeSpinner",function(){return __WEBPACK_IMPORTED_MODULE_4__components_CubeSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"BounceSpinner",function(){return __WEBPACK_IMPORTED_MODULE_5__components_BounceSpinner_vue___default.a}),__webpack_require__.d(__webpack_exports__,"CircleSpinner",function(){return __WEBPACK_IMPORTED_MODULE_6__components_CircleSpinner_vue___default.a});const plugin={version:"1.0.2",install:install};__webpack_exports__.default=plugin;let GlobalVue=null;"undefined"!=typeof window?GlobalVue=window.Vue:"undefined"!=typeof global&&(GlobalVue=global.Vue),GlobalVue&&GlobalVue.use(plugin)},function(module,exports){},function(module,exports){},function(module,exports){},function(module,exports){},function(module,exports){},function(module,exports){},function(module,exports){},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[this._m(0)]):this._e()},staticRenderFns:[function(){var _h=this.$createElement,_c=this._self._c||_h;return _c("div",{staticClass:"sk-folding-cube"},[_c("div",{staticClass:"sk-cube1 sk-cube"}),this._v(" "),_c("div",{staticClass:"sk-cube2 sk-cube"}),this._v(" "),_c("div",{staticClass:"sk-cube4 sk-cube"}),this._v(" "),_c("div",{staticClass:"sk-cube3 sk-cube"})])}]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[this._m(0)]):this._e()},staticRenderFns:[function(){var _h=this.$createElement,_c=this._self._c||_h;return _c("div",{staticClass:"spinner"},[_c("div",{staticClass:"cube1"}),this._v(" "),_c("div",{staticClass:"cube2"})])}]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[_c("div",{staticClass:"spinner",style:this.styles})]):this._e()},staticRenderFns:[]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[this._m(0)]):this._e()},staticRenderFns:[function(){var _vm=this,_h=_vm.$createElement,_c=_vm._self._c||_h;return _c("div",{staticClass:"sk-fading-circle"},[_c("div",{staticClass:"sk-circle1 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle2 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle3 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle4 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle5 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle6 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle7 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle8 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle9 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle10 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle11 sk-circle"}),_vm._v(" "),_c("div",{staticClass:"sk-circle12 sk-circle"})])}]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[_c("div",{staticClass:"spinner"})]):this._e()},staticRenderFns:[]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[this._m(0)]):this._e()},staticRenderFns:[function(){var _h=this.$createElement,_c=this._self._c||_h;return _c("div",{staticClass:"spinner"},[_c("div",{staticClass:"double-bounce1"}),this._v(" "),_c("div",{staticClass:"double-bounce2"})])}]}},function(module,exports){module.exports={render:function(){var _h=this.$createElement,_c=this._self._c||_h;return this.isLoading?_c("div",[this._m(0)]):this._e()},staticRenderFns:[function(){var _h=this.$createElement,_c=this._self._c||_h;return _c("div",{staticClass:"spinner"},[_c("div",{staticClass:"rect1"}),this._v(" "),_c("div",{staticClass:"rect2"}),this._v(" "),_c("div",{staticClass:"rect3"}),this._v(" "),_c("div",{staticClass:"rect4"}),this._v(" "),_c("div",{staticClass:"rect5"})])}]}}]);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/vue-spinners/dist/vue-spinners.css":
+/*!*********************************************************!*\
+  !*** ./node_modules/vue-spinners/dist/vue-spinners.css ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vue-spinners.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-spinners/dist/vue-spinners.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-spinners/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/vue-spinners/index.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dist/vue-spinners.common */ "./node_modules/vue-spinners/dist/vue-spinners.common.js");
+/* harmony import */ var _dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0___default.a; });
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _dist_vue_spinners_common__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _dist_vue_spinners_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dist/vue-spinners.css */ "./node_modules/vue-spinners/dist/vue-spinners.css");
+/* harmony import */ var _dist_vue_spinners_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_dist_vue_spinners_css__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
 
 
 /***/ }),
@@ -37494,15 +37616,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var vue_session__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-session */ "./node_modules/vue-session/index.js");
 /* harmony import */ var vue_session__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_session__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _views_Login_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./views/Login.vue */ "./resources/js/views/Login.vue");
-/* harmony import */ var _views_Index_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./views/Index.vue */ "./resources/js/views/Index.vue");
-/* harmony import */ var _views_Register_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./views/Register.vue */ "./resources/js/views/Register.vue");
-/* harmony import */ var _views_News_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./views/News.vue */ "./resources/js/views/News.vue");
-/* harmony import */ var _views_Logout_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./views/Logout.vue */ "./resources/js/views/Logout.vue");
-/* harmony import */ var _views_Favorites_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/Favorites.vue */ "./resources/js/views/Favorites.vue");
+/* harmony import */ var vue_spinners__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-spinners */ "./node_modules/vue-spinners/index.js");
+/* harmony import */ var _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./views/Login.vue */ "./resources/js/views/Login.vue");
+/* harmony import */ var _views_Index_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./views/Index.vue */ "./resources/js/views/Index.vue");
+/* harmony import */ var _views_Register_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./views/Register.vue */ "./resources/js/views/Register.vue");
+/* harmony import */ var _views_News_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./views/News.vue */ "./resources/js/views/News.vue");
+/* harmony import */ var _views_Logout_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/Logout.vue */ "./resources/js/views/Logout.vue");
+/* harmony import */ var _views_Favorites_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./views/Favorites.vue */ "./resources/js/views/Favorites.vue");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
 
  //import views
 
@@ -37515,30 +37639,31 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 Vue.use(vue_session__WEBPACK_IMPORTED_MODULE_1___default.a);
+Vue.use(vue_spinners__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var routes = [{
   name: 'index',
   path: '/',
-  component: _views_Index_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _views_Index_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
 }, {
   name: 'register',
   path: '/register',
-  component: _views_Register_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  component: _views_Register_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
 }, {
   name: 'login',
   path: '/login',
-  component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
   name: 'news',
   path: '/news',
-  component: _views_News_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _views_News_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
 }, {
   name: 'logout',
   path: '/logout',
-  component: _views_Logout_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+  component: _views_Logout_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
 }, {
   name: 'favorites',
   path: '/favorites',
-  component: _views_Favorites_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _views_Favorites_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes //mode: 'history'
