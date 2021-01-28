@@ -39414,7 +39414,8 @@ var user_module = {
     do_login: function do_login(_ref2, formData) {
       var commit = _ref2.commit,
           state = _ref2.state,
-          dispatch = _ref2.dispatch;
+          dispatch = _ref2.dispatch,
+          rootState = _ref2.rootState;
       axios.post("login", formData.payload).then(function (result) {
         if (result.status === 205) {
           state.user.status = 'Invalid login';
@@ -39429,7 +39430,7 @@ var user_module = {
           vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$session.set('user_id', state.user.user_id);
           vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$session.set('name', state.user.user_name);
           alert("You have successfully logged in. You will now be redirected to the homepage.");
-          state.router.push({
+          rootState.router.push({
             name: 'index'
           });
         }
@@ -39568,6 +39569,21 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     user: user_module,
     favorites: favorites_module,
     news: news_module
+  },
+  state: {
+    router: null
+  },
+  actions: {
+    get_router: function get_router(_ref11, router) {
+      var commit = _ref11.commit,
+          state = _ref11.state;
+      commit('set_router', router.payload);
+    }
+  },
+  mutations: {
+    set_router: function set_router(state, payload) {
+      state.router = payload;
+    }
   }
 });
 

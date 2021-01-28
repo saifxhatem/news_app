@@ -42,7 +42,7 @@ const user_module = {
             .catch(function(error) {});
             
         },
-        do_login ({ commit, state, dispatch }, formData)
+        do_login ({ commit, state, dispatch, rootState }, formData)
         {
             axios.post("login", formData.payload)
                 .then((result) => {
@@ -57,7 +57,7 @@ const user_module = {
                         Vue.prototype.$session.set('user_id', state.user.user_id)
                         Vue.prototype.$session.set('name', state.user.user_name)
                         alert("You have successfully logged in. You will now be redirected to the homepage.");
-                        state.router.push({ name: 'index'})
+                        rootState.router.push({ name: 'index'})
                         
                     }
 
@@ -196,6 +196,21 @@ export const store = new Vuex.Store({
         favorites: favorites_module,
         news: news_module
     },
+    state: {
+        router: null
+    },
+    actions: {
+        get_router ({commit, state}, router)
+        {
+            commit('set_router', router.payload)
+        },
+    },
+    mutations: {
+        set_router (state, payload)
+        {
+            state.router = payload;
+        }
+    }
     
     
 })
