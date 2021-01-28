@@ -81,13 +81,13 @@ export default {
     },
     computed: {
         articles () {
-            return this.$store.state.favorites;
+            return this.$store.state.favorites.favorites;
         },
         article_count() {
-            return this.$store.state.user.favorite_count;
+            return this.$store.state.user.user.favorite_count;
         },
         no_articles_in_filter() {
-            return this.$store.state.flags.no_favorites_in_selected_section;
+            return this.$store.state.favorites.flags.no_favorites_in_selected_section;
         }
     },
     beforeCreate() {

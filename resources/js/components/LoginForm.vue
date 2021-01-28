@@ -66,10 +66,6 @@ export default {
         }
     },
 
-
-    computed: {
-        
-    },
     mounted() {
         this.$store.dispatch({
                     type: 'get_router',

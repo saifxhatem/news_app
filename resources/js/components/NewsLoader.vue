@@ -82,7 +82,7 @@ export default {
     computed: {
         articles () {
             
-            return this.$store.state.articles;
+            return this.$store.state.news.articles;
             
         }
     },
