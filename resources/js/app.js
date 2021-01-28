@@ -1,11 +1,15 @@
 require('./bootstrap');
 
-
+//import packages
 window.Vue = require('vue');
 import VueRouter from 'vue-router'
 import VueSession from 'vue-session'
 import VueSpinners from 'vue-spinners'
+import Vuex from 'vuex'
 
+//import store
+
+import {store} from './store/store'
 
 //import views
 import Login from './views/Login.vue'
@@ -20,6 +24,8 @@ import Favorites from './views/Favorites.vue'
 Vue.use(VueRouter)
 Vue.use(VueSession)
 Vue.use(VueSpinners)
+Vue.use(Vuex)
+
 
 
 
@@ -54,5 +60,6 @@ Vue.component('favorites-loader', require('./components/FavoritesLoader.vue').de
 
 const app = new Vue({
   el: '#app',
+  store,
   router
 }).$mount('#app');

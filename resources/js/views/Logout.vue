@@ -11,6 +11,9 @@ export default {
             this.$router.push('/')
         }
         else {
+            this.$store.dispatch({
+                    type: 'do_logout'
+                })
             this.$session.destroy();
             alert("You have been logged out. You will now be redirected to the homepage");
             this.$router.push('/')

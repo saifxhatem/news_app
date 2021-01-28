@@ -2,6 +2,7 @@
     <div>
         <br/><br/>
         <h2><center>{{greet_message}}</center></h2>
+        
     </div>
 
 </template>
@@ -17,6 +18,12 @@ export default {
     ,
     mounted(){
         this.session_check();
+    },
+
+    computed: {
+        test_property() {
+            return this.$store.getters.test_message_change;
+        }
     },
 
     methods: {
