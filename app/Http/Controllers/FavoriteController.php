@@ -91,10 +91,7 @@ class FavoriteController extends Controller
         ]);
 
         $favorite_count = Favorite::where('user_id', $request->user_id)->count();
-        if ($favorite_count < 1) {
-            return response("User has no favorites", 215);
-        }
-        else return response("User has favorites", 200);
+        return $favorite_count;
     }
 
     

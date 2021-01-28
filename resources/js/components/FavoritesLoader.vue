@@ -9,7 +9,7 @@
                 <h2> You don't have any articles in this section. <br></h2>
             </center>
         </div>    
-        <div v-if="no_articles">
+        <div v-if="article_count < 1">
             <!-- If the user has no articles saved, display below message -->
             <center>
                 <h2> You have no saved articles. You can save articles from the news page. The button below will take you to the news page. <br></h2>
@@ -73,15 +73,23 @@
 export default {
     data: function() {
         return {
-            articles: [],
             user_id: null,
             sort_by: null, //used to specify which articles to show based on user's filter pref
-            no_articles: null, //flag to signal that the user has no saved articles
-            no_articles_in_filter: null,
-            loading: true,
+            //no_articles_in_filter: null,
+            loading: false,
         }
     },
-
+    computed: {
+        articles () {
+            return this.$store.state.favorites;
+        },
+        article_count() {
+            return this.$store.state.user.favorite_count;
+        },
+        no_articles_in_filter() {
+            return this.$store.state.flags.no_favorites_in_selected_section;
+        }
+    },
     beforeCreate() {
         //check if user is logged in and therefore should have access to this page
         if (!this.$session.exists()) {
@@ -94,52 +102,36 @@ export default {
         //get user's id and load their favorited articles
         this.user_id = this.$session.get('user_id')
         this.get_favorites_count()
-        this.loading = true;
 
 
     },
     methods: {
         load_articles: function() {
             this.loading = true;
-            this.no_articles_in_filter = false;
-            this.articles = [];
-            axios.post('load-favorites', { user_id: this.user_id, filter: this.sort_by })
-                .then((response) => {
-                    if (response.status == 216)
-                        this.no_articles_in_filter = true;
-                    if (response.data && this.no_articles_in_filter == false) //check existence of data before assigning
-                        this.articles = response.data;
-                        this.loading = false;
+            //this.no_articles_in_filter = false;
+            //this.articles = [];
+            this.$store.dispatch({
+                    type: 'clear_favorites',
                 })
-                .catch(function(error) {});
-
+            this.$store.dispatch({
+                    type: 'load_favorites',
+                    payload: {user_id: this.user_id, filter: this.sort_by}
+                })
+            this.loading = false;
         },
         unfavorite: function(article) {
-            axios.post('delete-favorite', {
-                    //send the request to delete the article the user wants to remove
-                    user_id: this.user_id,
-                    article_id: article.id
+            this.$store.dispatch({
+                    type: 'delete_favorites',
+                    payload: {article_id: article.id, user_id: this.user_id}
                 })
-                .then((response) => {
-                    this.$set(article, 'deleted', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
-                })
-                .catch(function(error) {});
+            this.$set(article, 'deleted', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
         },
         get_favorites_count() {
-            axios.post('get-favorite-count', {
-                    //send the request to delete the article the user wants to remove
-                    user_id: this.user_id,
+            this.$store.dispatch({
+                    type: 'get_user_favorite_count',
+                    payload: {user_id: this.user_id}
                 })
-                .then((response) => {
-                    if (response.status === 215) 
-                    {
-                        this.no_articles = true;
-                        this.loading = false;
-                        console.log("user has no favorites")
-                    }
-                    this.loading = false;
-                })
-                .catch(function(error) {});
+            this.loading = false;
         }
     }
 }

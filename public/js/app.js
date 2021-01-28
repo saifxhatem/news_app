@@ -2066,15 +2066,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      articles: [],
       user_id: null,
       sort_by: null,
       //used to specify which articles to show based on user's filter pref
-      no_articles: null,
-      //flag to signal that the user has no saved articles
-      no_articles_in_filter: null,
-      loading: true
+      //no_articles_in_filter: null,
+      loading: false
     };
+  },
+  computed: {
+    articles: function articles() {
+      return this.$store.state.favorites;
+    },
+    article_count: function article_count() {
+      return this.$store.state.user.favorite_count;
+    },
+    no_articles_in_filter: function no_articles_in_filter() {
+      return this.$store.state.flags.no_favorites_in_selected_section;
+    }
   },
   beforeCreate: function beforeCreate() {
     //check if user is logged in and therefore should have access to this page
@@ -2087,52 +2095,42 @@ __webpack_require__.r(__webpack_exports__);
     //get user's id and load their favorited articles
     this.user_id = this.$session.get('user_id');
     this.get_favorites_count();
-    this.loading = true;
   },
   methods: {
     load_articles: function load_articles() {
-      var _this = this;
+      this.loading = true; //this.no_articles_in_filter = false;
+      //this.articles = [];
 
-      this.loading = true;
-      this.no_articles_in_filter = false;
-      this.articles = [];
-      axios.post('load-favorites', {
-        user_id: this.user_id,
-        filter: this.sort_by
-      }).then(function (response) {
-        if (response.status == 216) _this.no_articles_in_filter = true;
-        if (response.data && _this.no_articles_in_filter == false) //check existence of data before assigning
-          _this.articles = response.data;
-        _this.loading = false;
-      })["catch"](function (error) {});
+      this.$store.dispatch({
+        type: 'clear_favorites'
+      });
+      this.$store.dispatch({
+        type: 'load_favorites',
+        payload: {
+          user_id: this.user_id,
+          filter: this.sort_by
+        }
+      });
+      this.loading = false;
     },
     unfavorite: function unfavorite(article) {
-      var _this2 = this;
-
-      axios.post('delete-favorite', {
-        //send the request to delete the article the user wants to remove
-        user_id: this.user_id,
-        article_id: article.id
-      }).then(function (response) {
-        _this2.$set(article, 'deleted', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
-
-      })["catch"](function (error) {});
+      this.$store.dispatch({
+        type: 'delete_favorites',
+        payload: {
+          article_id: article.id,
+          user_id: this.user_id
+        }
+      });
+      this.$set(article, 'deleted', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
     },
     get_favorites_count: function get_favorites_count() {
-      var _this3 = this;
-
-      axios.post('get-favorite-count', {
-        //send the request to delete the article the user wants to remove
-        user_id: this.user_id
-      }).then(function (response) {
-        if (response.status === 215) {
-          _this3.no_articles = true;
-          _this3.loading = false;
-          console.log("user has no favorites");
+      this.$store.dispatch({
+        type: 'get_user_favorite_count',
+        payload: {
+          user_id: this.user_id
         }
-
-        _this3.loading = false;
-      })["catch"](function (error) {});
+      });
+      this.loading = false;
     }
   }
 });
@@ -2407,14 +2405,15 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     save_headline: function save_headline(article) {
-      var _this = this;
-
       this.article_preprocess(article); //call our preprocessor
 
-      axios.post("/add-to-favorites", article).then(function (result) {
-        _this.$set(article, 'saved', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
-
-      })["catch"](function (error) {});
+      console.log("Before dispatch: article = ");
+      console.log(article);
+      this.$store.dispatch({
+        type: 'save_favorites',
+        payload: article
+      });
+      this.$set(article, 'saved', true); //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
     },
     article_preprocess: function article_preprocess(article) {
       //we need to do some stuff to our article object before we can send it to our backend and save it
@@ -21177,7 +21176,7 @@ var render = function() {
         )
       : _vm._e(),
     _vm._v(" "),
-    _vm.no_articles
+    _vm.article_count < 1
       ? _c(
           "div",
           [
@@ -39381,10 +39380,15 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     user: {
       user_id: null,
       user_name: null,
-      status: 0
+      status: 0,
+      favorite_count: null
     },
     router: null,
-    articles: null
+    articles: null,
+    favorites: null,
+    flags: {
+      no_favorites_in_selected_section: null
+    }
   },
   getters: {},
   mutations: {
@@ -39405,6 +39409,19 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     clear_articles: function clear_articles(state) {
       state.articles = [];
+    },
+    set_favorites: function set_favorites(state, payload) {
+      state.favorites = payload;
+    },
+    clear_favorites: function clear_favorites(state) {
+      state.favorites = [];
+    },
+    set_user_favorites_count: function set_user_favorites_count(state, payload) {
+      state.user.favorite_count = payload;
+    },
+    set_no_articles_flag: function set_no_articles_flag(state, payload) {
+      if (payload == true) state.flags.no_favorites_in_selected_section = true;
+      if (payload == false) state.flags.no_favorites_in_selected_section = false;
     }
   },
   actions: {
@@ -39481,6 +39498,60 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       var commit = _ref6.commit,
           state = _ref6.state;
       commit('clear_articles');
+    },
+    load_favorites: function load_favorites(_ref7, query) {
+      var commit = _ref7.commit,
+          state = _ref7.state;
+      //console.log("In action: Query = " + query.payload.filter)
+      axios.post('load-favorites', {
+        user_id: query.payload.user_id,
+        filter: query.payload.filter
+      }).then(function (response) {
+        if (response.status === 216) //no articles
+          commit('set_no_articles_flag', true);
+
+        if (response.data && response.status != 216) //check existence of data before assigning
+          {
+            commit('set_favorites', response.data);
+            commit('set_no_articles_flag', false);
+          }
+      })["catch"](function (error) {});
+    },
+    save_favorites: function save_favorites(_ref8, query) {
+      var commit = _ref8.commit,
+          state = _ref8.state;
+      axios.post('add-to-favorites', query.payload).then(function (response) {
+        if (response.status = 200) //check existence of data before assigning
+          console.log("Article saved successfully");
+      })["catch"](function (error) {});
+    },
+    delete_favorites: function delete_favorites(_ref9, query) {
+      var commit = _ref9.commit,
+          state = _ref9.state;
+      axios.post('delete-favorite', {
+        //send the request to delete the article the user wants to remove
+        user_id: query.payload.user_id,
+        article_id: query.payload.article_id
+      }).then(function (response) {
+        if (response.status = 200) //check existence of data before assigning
+          console.log("Article deleted successfully");
+      })["catch"](function (error) {});
+    },
+    clear_favorites: function clear_favorites(_ref10) {
+      var commit = _ref10.commit,
+          state = _ref10.state;
+      commit('clear_favorites');
+    },
+    get_user_favorite_count: function get_user_favorite_count(_ref11, query) {
+      var commit = _ref11.commit,
+          state = _ref11.state;
+      axios.post('get-favorite-count', {
+        //send the request to delete the article the user wants to remove
+        user_id: query.payload.user_id
+      }).then(function (response) {
+        console.log("Count = " + response.data);
+        commit('set_user_favorites_count', response.data);
+      })["catch"](function (error) {});
     }
   }
 });

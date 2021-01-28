@@ -136,13 +136,13 @@ export default {
         },
         save_headline: function(article) {
             this.article_preprocess(article) //call our preprocessor
-            axios.post("/add-to-favorites", article)
-                .then((result) => {
-                    this.$set(article, 'saved', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
-
+            console.log("Before dispatch: article = ")
+            console.log(article)
+            this.$store.dispatch({
+                    type: 'save_favorites',
+                    payload: article
                 })
-                .catch((error) => {
-                });
+            this.$set(article, 'saved', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
         },
         article_preprocess: function (article) { //we need to do some stuff to our article object before we can send it to our backend and save it
             article.user_id = this.$session.get('user_id') //apend user ID to our object
