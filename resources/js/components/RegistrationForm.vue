@@ -70,27 +70,13 @@ export default {
     },
 
 
-
-    methods: {
-        postData(e) {
-            //all inputs validated, make the call to post the data
-            axios.post("register", this.formData)
-                .then((result) => {
-                    alert("You have been registered on News App. Please check your email for your password.");
-                    this.$router.push({ name: 'index'})
-
+    mounted() {
+        this.$store.dispatch({
+                    type: 'get_router',
+                    payload: this.$router
                 })
-                .catch((error) => {
-                    this.show_error = true;
-                    let errors = error.response.data.errors;
-                    for (error in errors) {
-                        if (error = "user_email") this.err_msg = "Email is already in use."
-                    }
-                });
-
-
-        },
-
+    },
+    methods: {
         validate_form() {
             
             this.clear_validation_flags(); //clear flags from previous runs
@@ -126,7 +112,11 @@ export default {
             if (!this.validation_errors.user_email_failed && !this.validation_errors.user_name_failed && !this.validation_errors.user_dob_failed) { //if everything is in order, post
                 this.show_error = false;
                 this.err_msg = "";
-                this.postData()
+                this.$store.dispatch({
+                    type: 'do_registration',
+                    payload: this.formData
+                })
+                
             }
         },
         clear_validation_flags() { 

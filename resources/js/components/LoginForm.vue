@@ -4,6 +4,9 @@
 
 <template>
     <div>
+        <div>
+        
+        </div>
         <br/>
         <error-alert v-if="show_error" message="Login failed." :error="err_msg"> </error-alert> <!-- If error flag is set, show error alert component -->
         <div v-if="errors">
@@ -64,32 +67,16 @@ export default {
     },
 
 
-
-    methods: {
-        postData(e) {
-            //all inputs validated, make the call to post the data
-            axios.post("login", this.formData)
-                .then((result) => {
-                    if (result.status === 205) {
-                        this.show_error = true;
-                        this.err_msg = "Email or password are incorrect."
-                    } else {
-                        this.show_error = false;
-                        this.errors = "";
-                        this.$session.start()
-                        this.$session.set('user_id', result.data.id)
-                        this.$session.set('name', result.data.name)
-                        alert("You have successfully logged in. You will now be redirected to the homepage.");
-                        this.$router.push({ name: 'index'})
-                    }
-
+    computed: {
+        
+    },
+    mounted() {
+        this.$store.dispatch({
+                    type: 'get_router',
+                    payload: this.$router
                 })
-                .catch((error) => {
-                    this.errors = error.response.data.errors;
-
-                });
-
-        },
+    },
+    methods: {
         validate_form() {
             //clear flags from previous runs
             this.clear_validation_flags();
@@ -114,7 +101,11 @@ export default {
             {
                 this.show_error = false;
                 this.err_msg = "";
-                this.postData()
+                //this.postData()
+                this.$store.dispatch({
+                    type: 'do_login',
+                    payload: this.formData
+                })
             }
         },
         clear_validation_flags() {

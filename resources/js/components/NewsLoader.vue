@@ -72,11 +72,18 @@
 export default {
     data: function() {
         return {
-            articles: [],
+            //articles: [],
             country_code: null,
             topic: null,
             logged_in: null,
             loading: false
+        }
+    },
+    computed: {
+        articles () {
+            
+            return this.$store.state.articles;
+            
         }
     },
     mounted() {
@@ -91,21 +98,23 @@ export default {
     methods: {
         load_articles: function() {
             this.loading = true;
+            console.log(this.loading)
             let url = '/load-news/' + this.country_code + '/' + this.topic;
-            axios.get(url)
-                .then((response) => {
-                    //check existence of data before assigning
-                    if (response.data){
-                        //api call successful, assign data
-                        this.loading = false;
-                        this.articles = response.data;
-                    }
+            this.$store.dispatch({
+                    type: 'load_articles',
+                    payload: url
                 })
-                .catch(function(error) {});
+            console.log(this.loading)
+            this.loading = false;
+            
+            console.log(this.loading)
 
         },
         chosen_region: function(chosen_country_code) {
-            this.articles = []; //clear previous articles in case user wants to change the region
+            //this.articles = []; //clear previous articles in case user wants to change the region
+            this.$store.dispatch({
+                    type: 'clear_articles',
+                })
             this.topic = null; //clear previously selected topic
             if (chosen_country_code === 'eg') {
                 //assign user's chosen country
