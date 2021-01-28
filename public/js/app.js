@@ -2075,13 +2075,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     articles: function articles() {
-      return this.$store.state.favorites;
+      return this.$store.state.favorites.favorites;
     },
     article_count: function article_count() {
-      return this.$store.state.user.favorite_count;
+      return this.$store.state.user.user.favorite_count;
     },
     no_articles_in_filter: function no_articles_in_filter() {
-      return this.$store.state.flags.no_favorites_in_selected_section;
+      return this.$store.state.favorites.flags.no_favorites_in_selected_section;
     }
   },
   beforeCreate: function beforeCreate() {
@@ -2212,7 +2212,6 @@ __webpack_require__.r(__webpack_exports__);
 
     };
   },
-  computed: {},
   mounted: function mounted() {
     this.$store.dispatch({
       type: 'get_router',
@@ -2356,7 +2355,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     articles: function articles() {
-      return this.$store.state.articles;
+      return this.$store.state.news.articles;
     }
   },
   mounted: function mounted() {
@@ -39375,23 +39374,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
-var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+var user_module = {
   state: {
     user: {
       user_id: null,
       user_name: null,
       status: 0,
       favorite_count: null
-    },
-    router: null,
-    articles: null,
-    favorites: null,
-    flags: {
-      no_favorites_in_selected_section: null
     }
   },
-  getters: {},
   mutations: {
+    set_user_favorites_count: function set_user_favorites_count(state, payload) {
+      state.user.favorite_count = payload;
+    },
     set_user_status: function set_user_status(state, payload) {
       if (payload.action === 'logout') {
         //set status state to 0
@@ -39402,33 +39397,24 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         //set status state to 1
         state.user.status = 1;
       }
-    },
-    set_articles: function set_articles(state, payload) {
-      //console.log(payload)
-      state.articles = payload;
-    },
-    clear_articles: function clear_articles(state) {
-      state.articles = [];
-    },
-    set_favorites: function set_favorites(state, payload) {
-      state.favorites = payload;
-    },
-    clear_favorites: function clear_favorites(state) {
-      state.favorites = [];
-    },
-    set_user_favorites_count: function set_user_favorites_count(state, payload) {
-      state.user.favorite_count = payload;
-    },
-    set_no_articles_flag: function set_no_articles_flag(state, payload) {
-      if (payload == true) state.flags.no_favorites_in_selected_section = true;
-      if (payload == false) state.flags.no_favorites_in_selected_section = false;
     }
   },
   actions: {
-    do_login: function do_login(_ref, formData) {
+    get_user_favorite_count: function get_user_favorite_count(_ref, query) {
       var commit = _ref.commit,
-          state = _ref.state,
-          dispatch = _ref.dispatch;
+          state = _ref.state;
+      axios.post('get-favorite-count', {
+        //send the request to delete the article the user wants to remove
+        user_id: query.payload.user_id
+      }).then(function (response) {
+        console.log("Count = " + response.data);
+        commit('set_user_favorites_count', response.data);
+      })["catch"](function (error) {});
+    },
+    do_login: function do_login(_ref2, formData) {
+      var commit = _ref2.commit,
+          state = _ref2.state,
+          dispatch = _ref2.dispatch;
       axios.post("login", formData.payload).then(function (result) {
         if (result.status === 205) {
           state.user.status = 'Invalid login';
@@ -39451,17 +39437,17 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         return error;
       });
     },
-    do_logout: function do_logout(_ref2) {
-      var commit = _ref2.commit,
-          state = _ref2.state;
+    do_logout: function do_logout(_ref3) {
+      var commit = _ref3.commit,
+          state = _ref3.state;
       commit('set_user_status', {
         action: 'logout'
       });
     },
-    do_registration: function do_registration(_ref3, formData) {
-      var commit = _ref3.commit,
-          state = _ref3.state,
-          dispatch = _ref3.dispatch;
+    do_registration: function do_registration(_ref4, formData) {
+      var commit = _ref4.commit,
+          state = _ref4.state,
+          dispatch = _ref4.dispatch;
       axios.post("register", formData.payload).then(function (result) {
         if (result.status !== 200) {
           console.log("error");
@@ -39474,34 +39460,20 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       })["catch"](function (error) {
         return error;
       });
-    },
-    get_router: function get_router(_ref4, router) {
-      var commit = _ref4.commit,
-          state = _ref4.state;
-      state.router = router.payload;
-    },
-    load_articles: function load_articles(_ref5, url) {
+    }
+  }
+};
+var favorites_module = {
+  state: {
+    favorites: null,
+    flags: {
+      no_favorites_in_selected_section: null
+    }
+  },
+  actions: {
+    load_favorites: function load_favorites(_ref5, query) {
       var commit = _ref5.commit,
           state = _ref5.state;
-      //console.log("in load_articles, url = " + url.payload)
-      axios.get(url.payload).then(function (response) {
-        //check existence of data before assigning
-        if (response.data) {
-          //api call successful, assign data
-          //this.loading = false;
-          //this.articles = response.data;
-          commit('set_articles', response.data);
-        }
-      })["catch"](function (error) {});
-    },
-    clear_articles: function clear_articles(_ref6) {
-      var commit = _ref6.commit,
-          state = _ref6.state;
-      commit('clear_articles');
-    },
-    load_favorites: function load_favorites(_ref7, query) {
-      var commit = _ref7.commit,
-          state = _ref7.state;
       //console.log("In action: Query = " + query.payload.filter)
       axios.post('load-favorites', {
         user_id: query.payload.user_id,
@@ -39517,17 +39489,17 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           }
       })["catch"](function (error) {});
     },
-    save_favorites: function save_favorites(_ref8, query) {
-      var commit = _ref8.commit,
-          state = _ref8.state;
+    save_favorites: function save_favorites(_ref6, query) {
+      var commit = _ref6.commit,
+          state = _ref6.state;
       axios.post('add-to-favorites', query.payload).then(function (response) {
         if (response.status = 200) //check existence of data before assigning
           console.log("Article saved successfully");
       })["catch"](function (error) {});
     },
-    delete_favorites: function delete_favorites(_ref9, query) {
-      var commit = _ref9.commit,
-          state = _ref9.state;
+    delete_favorites: function delete_favorites(_ref7, query) {
+      var commit = _ref7.commit,
+          state = _ref7.state;
       axios.post('delete-favorite', {
         //send the request to delete the article the user wants to remove
         user_id: query.payload.user_id,
@@ -39537,22 +39509,65 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           console.log("Article deleted successfully");
       })["catch"](function (error) {});
     },
-    clear_favorites: function clear_favorites(_ref10) {
+    clear_favorites: function clear_favorites(_ref8) {
+      var commit = _ref8.commit,
+          state = _ref8.state;
+      commit('clear_favorites');
+    }
+  },
+  mutations: {
+    set_favorites: function set_favorites(state, payload) {
+      state.favorites = payload;
+    },
+    clear_favorites: function clear_favorites(state) {
+      state.favorites = [];
+    },
+    set_no_articles_flag: function set_no_articles_flag(state, payload) {
+      if (payload == true) state.flags.no_favorites_in_selected_section = true;
+      if (payload == false) state.flags.no_favorites_in_selected_section = false;
+    }
+  }
+};
+var news_module = {
+  state: {
+    articles: null
+  },
+  actions: {
+    load_articles: function load_articles(_ref9, url) {
+      var commit = _ref9.commit,
+          state = _ref9.state;
+      //console.log("in load_articles, url = " + url.payload)
+      axios.get(url.payload).then(function (response) {
+        //check existence of data before assigning
+        if (response.data) {
+          //api call successful, assign data
+          //this.loading = false;
+          //this.articles = response.data;
+          commit('set_articles', response.data);
+        }
+      })["catch"](function (error) {});
+    },
+    clear_articles: function clear_articles(_ref10) {
       var commit = _ref10.commit,
           state = _ref10.state;
-      commit('clear_favorites');
-    },
-    get_user_favorite_count: function get_user_favorite_count(_ref11, query) {
-      var commit = _ref11.commit,
-          state = _ref11.state;
-      axios.post('get-favorite-count', {
-        //send the request to delete the article the user wants to remove
-        user_id: query.payload.user_id
-      }).then(function (response) {
-        console.log("Count = " + response.data);
-        commit('set_user_favorites_count', response.data);
-      })["catch"](function (error) {});
+      commit('clear_articles');
     }
+  },
+  mutations: {
+    set_articles: function set_articles(state, payload) {
+      //console.log(payload)
+      state.articles = payload;
+    },
+    clear_articles: function clear_articles(state) {
+      state.articles = [];
+    }
+  }
+};
+var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  modules: {
+    user: user_module,
+    favorites: favorites_module,
+    news: news_module
   }
 });
 

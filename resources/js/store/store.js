@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export const store = new Vuex.Store({
+const user_module = {
     state: {   
         user:
             {
@@ -12,18 +12,11 @@ export const store = new Vuex.Store({
                 status: 0,
                 favorite_count: null
             },
-        router: null,
-        articles: null,
-        favorites: null,
-        flags: {
-            no_favorites_in_selected_section: null
-        }
-    },
-    getters: {
-        
-        
     },
     mutations: {
+        set_user_favorites_count (state, payload) {
+            state.user.favorite_count = payload
+        },
         set_user_status (state, payload) {
             if (payload.action === 'logout') {
                 //set status state to 0
@@ -34,31 +27,21 @@ export const store = new Vuex.Store({
                 state.user.status = 1
             }
         },
-        set_articles (state, payload){
-            //console.log(payload)
-            state.articles = payload
-        },
-        clear_articles (state) {
-            state.articles = []
-        },
-        set_favorites (state, payload) {
-            state.favorites = payload
-        },
-        clear_favorites (state) {
-            state.favorites = []
-        },
-        set_user_favorites_count (state, payload) {
-            state.user.favorite_count = payload
-        },
-        set_no_articles_flag (state, payload) {
-            if (payload == true)
-                state.flags.no_favorites_in_selected_section = true
-            if (payload == false)
-            state.flags.no_favorites_in_selected_section = false
-            
-        },
     },
     actions: {
+        get_user_favorite_count ({commit, state}, query)
+        {
+            axios.post('get-favorite-count', {
+                //send the request to delete the article the user wants to remove
+                user_id: query.payload.user_id,
+            })
+            .then((response) => {
+                console.log("Count = " + response.data)
+                commit('set_user_favorites_count', response.data)
+            })
+            .catch(function(error) {});
+            
+        },
         do_login ({ commit, state, dispatch }, formData)
         {
             axios.post("login", formData.payload)
@@ -86,8 +69,7 @@ export const store = new Vuex.Store({
         do_logout ({ commit, state }, )
         {
             commit('set_user_status', {action: 'logout'})
-        },
-        
+        },     
         do_registration ({ commit, state, dispatch }, formData)
         {
             axios.post("register", formData.payload)
@@ -105,29 +87,16 @@ export const store = new Vuex.Store({
                     return error;
                 });
         },
-        get_router ({commit, state}, router)
-        {
-            state.router = router.payload;
-        },
-        load_articles ({commit, state}, url)
-        {
-            //console.log("in load_articles, url = " + url.payload)
-            axios.get(url.payload)
-                .then((response) => {
-                    //check existence of data before assigning
-                    if (response.data){
-                        //api call successful, assign data
-                        //this.loading = false;
-                        //this.articles = response.data;
-                        commit('set_articles', response.data)
-                    }
-                })
-                .catch(function(error) {});
-        },
-        clear_articles ({commit, state})
-        {
-            commit('clear_articles')
-        },
+    }
+}
+const favorites_module = {
+    state: {
+        favorites: null,
+        flags : {
+            no_favorites_in_selected_section: null
+        }
+    },
+    actions: {
         load_favorites ({commit, state}, query)
         {
             //console.log("In action: Query = " + query.payload.filter)
@@ -170,19 +139,63 @@ export const store = new Vuex.Store({
         {
             commit('clear_favorites')
         },
-        get_user_favorite_count ({commit, state}, query)
+    },
+    mutations: {
+        set_favorites (state, payload) {
+            state.favorites = payload
+        },
+        clear_favorites (state) {
+            state.favorites = []
+        },
+        set_no_articles_flag (state, payload) {
+            if (payload == true)
+                state.flags.no_favorites_in_selected_section = true
+            if (payload == false)
+            state.flags.no_favorites_in_selected_section = false
+        }
+    }
+}
+const news_module = {
+    state: {
+        articles: null,
+    },
+    actions: {
+        load_articles ({commit, state}, url)
         {
-            axios.post('get-favorite-count', {
-                //send the request to delete the article the user wants to remove
-                user_id: query.payload.user_id,
-            })
-            .then((response) => {
-                console.log("Count = " + response.data)
-                commit('set_user_favorites_count', response.data)
-            })
-            .catch(function(error) {});
-            
+            //console.log("in load_articles, url = " + url.payload)
+            axios.get(url.payload)
+                .then((response) => {
+                    //check existence of data before assigning
+                    if (response.data){
+                        //api call successful, assign data
+                        //this.loading = false;
+                        //this.articles = response.data;
+                        commit('set_articles', response.data)
+                    }
+                })
+                .catch(function(error) {});
+        },
+        clear_articles ({commit, state})
+        {
+            commit('clear_articles')
+        },
+    },
+    mutations: {
+        set_articles (state, payload){
+            //console.log(payload)
+            state.articles = payload
+        },
+        clear_articles (state) {
+            state.articles = []
         },
     }
+}
+export const store = new Vuex.Store({
+    modules: {
+        user: user_module,
+        favorites: favorites_module,
+        news: news_module
+    },
+    
     
 })
