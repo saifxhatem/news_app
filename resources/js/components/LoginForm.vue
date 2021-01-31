@@ -4,9 +4,6 @@
 
 <template>
     <div>
-        <div>
-        
-        </div>
         <br/>
         <error-alert v-if="show_error" message="Login failed." :error="err_msg"> </error-alert> <!-- If error flag is set, show error alert component -->
         <div v-if="errors">

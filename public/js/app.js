@@ -2069,19 +2069,18 @@ __webpack_require__.r(__webpack_exports__);
       user_id: null,
       sort_by: null,
       //used to specify which articles to show based on user's filter pref
-      //no_articles_in_filter: null,
       loading: false
     };
   },
   computed: {
     articles: function articles() {
-      return this.$store.state.favorites.favorites;
+      if (this.$store.state && $this.store.state.favorites && $this.store.state.favorites.favorites) return this.$store.state.favorites.favorites;
     },
     article_count: function article_count() {
-      return this.$store.state.user.user.favorite_count;
+      if (this.$store.state && this.$store.state.user && this.$store.state.user.user && this.$store.state.user.user.favorite_count) return this.$store.state.user.user.favorite_count;
     },
     no_articles_in_filter: function no_articles_in_filter() {
-      return this.$store.state.favorites.flags.no_favorites_in_selected_section;
+      if (this.$store.state && this.$store.state.favorites && this.$store.state.favorites.flags && this.$store.state.favorites.flags.no_favorites_in_selected_section) return this.$store.state.favorites.flags.no_favorites_in_selected_section;
     }
   },
   beforeCreate: function beforeCreate() {
@@ -2098,9 +2097,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     load_articles: function load_articles() {
-      this.loading = true; //this.no_articles_in_filter = false;
-      //this.articles = [];
-
+      this.loading = true;
       this.$store.dispatch({
         type: 'clear_favorites'
       });
@@ -2146,9 +2143,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
 //
 //
 //
@@ -2355,7 +2349,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     articles: function articles() {
-      return this.$store.state.news.articles;
+      if (this.$store.state && this.$store.state.news && this.$store.state.news.articles) return this.$store.state.news.articles;
     }
   },
   mounted: function mounted() {
@@ -2375,9 +2369,7 @@ __webpack_require__.r(__webpack_exports__);
         type: 'load_articles',
         payload: url
       });
-      console.log(this.loading);
       this.loading = false;
-      console.log(this.loading);
     },
     chosen_region: function chosen_region(chosen_country_code) {
       //this.articles = []; //clear previous articles in case user wants to change the region
@@ -2406,8 +2398,6 @@ __webpack_require__.r(__webpack_exports__);
     save_headline: function save_headline(article) {
       this.article_preprocess(article); //call our preprocessor
 
-      console.log("Before dispatch: article = ");
-      console.log(article);
       this.$store.dispatch({
         type: 'save_favorites',
         payload: article
@@ -21390,8 +21380,6 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div"),
-      _vm._v(" "),
       _c("br"),
       _vm._v(" "),
       _vm.show_error
@@ -39407,7 +39395,6 @@ var user_module = {
         //send the request to delete the article the user wants to remove
         user_id: query.payload.user_id
       }).then(function (response) {
-        console.log("Count = " + response.data);
         commit('set_user_favorites_count', response.data);
       })["catch"](function (error) {});
     },
@@ -39475,7 +39462,6 @@ var favorites_module = {
     load_favorites: function load_favorites(_ref5, query) {
       var commit = _ref5.commit,
           state = _ref5.state;
-      //console.log("In action: Query = " + query.payload.filter)
       axios.post('load-favorites', {
         user_id: query.payload.user_id,
         filter: query.payload.filter
@@ -39537,13 +39523,10 @@ var news_module = {
     load_articles: function load_articles(_ref9, url) {
       var commit = _ref9.commit,
           state = _ref9.state;
-      //console.log("in load_articles, url = " + url.payload)
       axios.get(url.payload).then(function (response) {
         //check existence of data before assigning
         if (response.data) {
           //api call successful, assign data
-          //this.loading = false;
-          //this.articles = response.data;
           commit('set_articles', response.data);
         }
       })["catch"](function (error) {});
@@ -39556,7 +39539,6 @@ var news_module = {
   },
   mutations: {
     set_articles: function set_articles(state, payload) {
-      //console.log(payload)
       state.articles = payload;
     },
     clear_articles: function clear_articles(state) {

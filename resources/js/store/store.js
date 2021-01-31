@@ -36,7 +36,6 @@ const user_module = {
                 user_id: query.payload.user_id,
             })
             .then((response) => {
-                console.log("Count = " + response.data)
                 commit('set_user_favorites_count', response.data)
             })
             .catch(function(error) {});
@@ -99,7 +98,6 @@ const favorites_module = {
     actions: {
         load_favorites ({commit, state}, query)
         {
-            //console.log("In action: Query = " + query.payload.filter)
             axios.post('load-favorites', { user_id: query.payload.user_id, filter: query.payload.filter })
                 .then((response) => {
                     if (response.status === 216) //no articles
@@ -162,14 +160,11 @@ const news_module = {
     actions: {
         load_articles ({commit, state}, url)
         {
-            //console.log("in load_articles, url = " + url.payload)
             axios.get(url.payload)
                 .then((response) => {
                     //check existence of data before assigning
                     if (response.data){
                         //api call successful, assign data
-                        //this.loading = false;
-                        //this.articles = response.data;
                         commit('set_articles', response.data)
                     }
                 })
@@ -182,7 +177,6 @@ const news_module = {
     },
     mutations: {
         set_articles (state, payload){
-            //console.log(payload)
             state.articles = payload
         },
         clear_articles (state) {

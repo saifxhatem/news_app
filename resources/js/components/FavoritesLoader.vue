@@ -75,19 +75,21 @@ export default {
         return {
             user_id: null,
             sort_by: null, //used to specify which articles to show based on user's filter pref
-            //no_articles_in_filter: null,
             loading: false,
         }
     },
     computed: {
         articles () {
-            return this.$store.state.favorites.favorites;
+            if (this.$store.state && $this.store.state.favorites && $this.store.state.favorites.favorites)
+                return this.$store.state.favorites.favorites;
         },
         article_count() {
-            return this.$store.state.user.user.favorite_count;
+            if (this.$store.state && this.$store.state.user && this.$store.state.user.user && this.$store.state.user.user.favorite_count)
+                return this.$store.state.user.user.favorite_count;
         },
         no_articles_in_filter() {
-            return this.$store.state.favorites.flags.no_favorites_in_selected_section;
+            if (this.$store.state && this.$store.state.favorites && this.$store.state.favorites.flags && this.$store.state.favorites.flags.no_favorites_in_selected_section)    
+                return this.$store.state.favorites.flags.no_favorites_in_selected_section;
         }
     },
     beforeCreate() {
@@ -102,14 +104,10 @@ export default {
         //get user's id and load their favorited articles
         this.user_id = this.$session.get('user_id')
         this.get_favorites_count()
-
-
     },
     methods: {
         load_articles: function() {
             this.loading = true;
-            //this.no_articles_in_filter = false;
-            //this.articles = [];
             this.$store.dispatch({
                     type: 'clear_favorites',
                 })

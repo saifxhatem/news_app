@@ -81,8 +81,8 @@ export default {
     },
     computed: {
         articles () {
-            
-            return this.$store.state.news.articles;
+            if (this.$store.state && this.$store.state.news && this.$store.state.news.articles)
+                return this.$store.state.news.articles;
             
         }
     },
@@ -104,11 +104,7 @@ export default {
                     type: 'load_articles',
                     payload: url
                 })
-            console.log(this.loading)
             this.loading = false;
-            
-            console.log(this.loading)
-
         },
         chosen_region: function(chosen_country_code) {
             //this.articles = []; //clear previous articles in case user wants to change the region
@@ -136,8 +132,6 @@ export default {
         },
         save_headline: function(article) {
             this.article_preprocess(article) //call our preprocessor
-            console.log("Before dispatch: article = ")
-            console.log(article)
             this.$store.dispatch({
                     type: 'save_favorites',
                     payload: article
