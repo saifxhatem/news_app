@@ -72,7 +72,6 @@
 export default {
     data: function() {
         return {
-            //articles: [],
             country_code: null,
             topic: null,
             logged_in: null,
@@ -98,7 +97,6 @@ export default {
     methods: {
         load_articles: function() {
             this.loading = true;
-            console.log(this.loading)
             let url = '/load-news/' + this.country_code + '/' + this.topic;
             this.$store.dispatch({
                     type: 'load_articles',
@@ -107,7 +105,7 @@ export default {
             this.loading = false;
         },
         chosen_region: function(chosen_country_code) {
-            //this.articles = []; //clear previous articles in case user wants to change the region
+            //clear previous articles in case user wants to change the region
             this.$store.dispatch({
                     type: 'clear_articles',
                 })
