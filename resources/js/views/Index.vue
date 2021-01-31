@@ -20,12 +20,6 @@ export default {
         this.session_check();
     },
 
-    computed: {
-        test_property() {
-            return this.$store.getters.test_message_change;
-        }
-    },
-
     methods: {
         //check to see if user is logged in or not and set greet message if user is logged in
         session_check: function() {

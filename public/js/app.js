@@ -2074,7 +2074,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     articles: function articles() {
-      if (this.$store.state && $this.store.state.favorites && $this.store.state.favorites.favorites) return this.$store.state.favorites.favorites;
+      if (this.$store.state && this.$store.state.favorites && this.$store.state.favorites.favorites) return this.$store.state.favorites.favorites;
     },
     article_count: function article_count() {
       if (this.$store.state && this.$store.state.user && this.$store.state.user.user && this.$store.state.user.user.favorite_count) return this.$store.state.user.user.favorite_count;
@@ -2629,11 +2629,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.session_check();
-  },
-  computed: {
-    test_property: function test_property() {
-      return this.$store.getters.test_message_change;
-    }
   },
   methods: {
     //check to see if user is logged in or not and set greet message if user is logged in
@@ -21162,7 +21157,7 @@ var render = function() {
         )
       : _vm._e(),
     _vm._v(" "),
-    _vm.article_count < 1
+    !_vm.article_count
       ? _c(
           "div",
           [
@@ -39343,16 +39338,148 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/store/store.js":
-/*!*************************************!*\
-  !*** ./resources/js/store/store.js ***!
-  \*************************************/
-/*! exports provided: store */
+/***/ "./resources/js/store/modules/favorites_module.js":
+/*!********************************************************!*\
+  !*** ./resources/js/store/modules/favorites_module.js ***!
+  \********************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "store", function() { return store; });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var favorites_module = {
+  state: {
+    favorites: null,
+    flags: {
+      no_favorites_in_selected_section: null
+    }
+  },
+  actions: {
+    load_favorites: function load_favorites(_ref, query) {
+      var commit = _ref.commit,
+          state = _ref.state;
+      axios.post('load-favorites', {
+        user_id: query.payload.user_id,
+        filter: query.payload.filter
+      }).then(function (response) {
+        if (response.status === 216) //no articles
+          commit('set_no_articles_flag', true);
+
+        if (response.data && response.status != 216) //check existence of data before assigning
+          {
+            commit('set_favorites', response.data);
+            commit('set_no_articles_flag', false);
+          }
+      })["catch"](function (error) {});
+    },
+    save_favorites: function save_favorites(_ref2, query) {
+      var commit = _ref2.commit,
+          state = _ref2.state;
+      axios.post('add-to-favorites', query.payload).then(function (response) {
+        if (response.status = 200) //check existence of data before assigning
+          console.log("Article saved successfully");
+      })["catch"](function (error) {});
+    },
+    delete_favorites: function delete_favorites(_ref3, query) {
+      var commit = _ref3.commit,
+          state = _ref3.state;
+      axios.post('delete-favorite', {
+        //send the request to delete the article the user wants to remove
+        user_id: query.payload.user_id,
+        article_id: query.payload.article_id
+      }).then(function (response) {
+        if (response.status = 200) //check existence of data before assigning
+          console.log("Article deleted successfully");
+      })["catch"](function (error) {});
+    },
+    clear_favorites: function clear_favorites(_ref4) {
+      var commit = _ref4.commit,
+          state = _ref4.state;
+      commit('clear_favorites');
+    }
+  },
+  mutations: {
+    set_favorites: function set_favorites(state, payload) {
+      state.favorites = payload;
+    },
+    clear_favorites: function clear_favorites(state) {
+      state.favorites = [];
+    },
+    set_no_articles_flag: function set_no_articles_flag(state, payload) {
+      if (payload == true) state.flags.no_favorites_in_selected_section = true;
+      if (payload == false) state.flags.no_favorites_in_selected_section = false;
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (favorites_module);
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/news_module.js":
+/*!***************************************************!*\
+  !*** ./resources/js/store/modules/news_module.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var news_module = {
+  state: {
+    articles: null
+  },
+  actions: {
+    load_articles: function load_articles(_ref, url) {
+      var commit = _ref.commit,
+          state = _ref.state;
+      axios.get(url.payload).then(function (response) {
+        //check existence of data before assigning
+        if (response.data) {
+          //api call successful, assign data
+          commit('set_articles', response.data);
+        }
+      })["catch"](function (error) {});
+    },
+    clear_articles: function clear_articles(_ref2) {
+      var commit = _ref2.commit,
+          state = _ref2.state;
+      commit('clear_articles');
+    }
+  },
+  mutations: {
+    set_articles: function set_articles(state, payload) {
+      state.articles = payload;
+    },
+    clear_articles: function clear_articles(state) {
+      state.articles = [];
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (news_module);
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/user_module.js":
+/*!***************************************************!*\
+  !*** ./resources/js/store/modules/user_module.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
@@ -39448,114 +39575,45 @@ var user_module = {
     }
   }
 };
-var favorites_module = {
-  state: {
-    favorites: null,
-    flags: {
-      no_favorites_in_selected_section: null
-    }
-  },
-  actions: {
-    load_favorites: function load_favorites(_ref5, query) {
-      var commit = _ref5.commit,
-          state = _ref5.state;
-      axios.post('load-favorites', {
-        user_id: query.payload.user_id,
-        filter: query.payload.filter
-      }).then(function (response) {
-        if (response.status === 216) //no articles
-          commit('set_no_articles_flag', true);
+/* harmony default export */ __webpack_exports__["default"] = (user_module);
 
-        if (response.data && response.status != 216) //check existence of data before assigning
-          {
-            commit('set_favorites', response.data);
-            commit('set_no_articles_flag', false);
-          }
-      })["catch"](function (error) {});
-    },
-    save_favorites: function save_favorites(_ref6, query) {
-      var commit = _ref6.commit,
-          state = _ref6.state;
-      axios.post('add-to-favorites', query.payload).then(function (response) {
-        if (response.status = 200) //check existence of data before assigning
-          console.log("Article saved successfully");
-      })["catch"](function (error) {});
-    },
-    delete_favorites: function delete_favorites(_ref7, query) {
-      var commit = _ref7.commit,
-          state = _ref7.state;
-      axios.post('delete-favorite', {
-        //send the request to delete the article the user wants to remove
-        user_id: query.payload.user_id,
-        article_id: query.payload.article_id
-      }).then(function (response) {
-        if (response.status = 200) //check existence of data before assigning
-          console.log("Article deleted successfully");
-      })["catch"](function (error) {});
-    },
-    clear_favorites: function clear_favorites(_ref8) {
-      var commit = _ref8.commit,
-          state = _ref8.state;
-      commit('clear_favorites');
-    }
-  },
-  mutations: {
-    set_favorites: function set_favorites(state, payload) {
-      state.favorites = payload;
-    },
-    clear_favorites: function clear_favorites(state) {
-      state.favorites = [];
-    },
-    set_no_articles_flag: function set_no_articles_flag(state, payload) {
-      if (payload == true) state.flags.no_favorites_in_selected_section = true;
-      if (payload == false) state.flags.no_favorites_in_selected_section = false;
-    }
-  }
-};
-var news_module = {
-  state: {
-    articles: null
-  },
-  actions: {
-    load_articles: function load_articles(_ref9, url) {
-      var commit = _ref9.commit,
-          state = _ref9.state;
-      axios.get(url.payload).then(function (response) {
-        //check existence of data before assigning
-        if (response.data) {
-          //api call successful, assign data
-          commit('set_articles', response.data);
-        }
-      })["catch"](function (error) {});
-    },
-    clear_articles: function clear_articles(_ref10) {
-      var commit = _ref10.commit,
-          state = _ref10.state;
-      commit('clear_articles');
-    }
-  },
-  mutations: {
-    set_articles: function set_articles(state, payload) {
-      state.articles = payload;
-    },
-    clear_articles: function clear_articles(state) {
-      state.articles = [];
-    }
-  }
-};
+/***/ }),
+
+/***/ "./resources/js/store/store.js":
+/*!*************************************!*\
+  !*** ./resources/js/store/store.js ***!
+  \*************************************/
+/*! exports provided: store */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "store", function() { return store; });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _modules_user_module__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/user_module */ "./resources/js/store/modules/user_module.js");
+/* harmony import */ var _modules_favorites_module__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/favorites_module */ "./resources/js/store/modules/favorites_module.js");
+/* harmony import */ var _modules_news_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/news_module */ "./resources/js/store/modules/news_module.js");
+
+
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
-    user: user_module,
-    favorites: favorites_module,
-    news: news_module
+    user: _modules_user_module__WEBPACK_IMPORTED_MODULE_2__["default"],
+    favorites: _modules_favorites_module__WEBPACK_IMPORTED_MODULE_3__["default"],
+    news: _modules_news_module__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   state: {
     router: null
   },
   actions: {
-    get_router: function get_router(_ref11, router) {
-      var commit = _ref11.commit,
-          state = _ref11.state;
+    get_router: function get_router(_ref, router) {
+      var commit = _ref.commit,
+          state = _ref.state;
       commit('set_router', router.payload);
     }
   },

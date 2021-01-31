@@ -9,7 +9,7 @@
                 <h2> You don't have any articles in this section. <br></h2>
             </center>
         </div>    
-        <div v-if="article_count < 1">
+        <div v-if="!article_count">
             <!-- If the user has no articles saved, display below message -->
             <center>
                 <h2> You have no saved articles. You can save articles from the news page. The button below will take you to the news page. <br></h2>
@@ -80,7 +80,7 @@ export default {
     },
     computed: {
         articles () {
-            if (this.$store.state && $this.store.state.favorites && $this.store.state.favorites.favorites)
+            if (this.$store.state && this.$store.state.favorites && this.$store.state.favorites.favorites)
                 return this.$store.state.favorites.favorites;
         },
         article_count() {
@@ -130,6 +130,7 @@ export default {
                     payload: {user_id: this.user_id}
                 })
             this.loading = false;
+            
         }
     }
 }
