@@ -94,7 +94,6 @@ export default {
             {
                 this.show_error = false;
                 this.err_msg = "";
-                //this.postData()
                 this.$store.dispatch({
                     type: 'do_login',
                     payload: this.formData

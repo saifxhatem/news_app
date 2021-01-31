@@ -2237,8 +2237,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!this.validation_errors.user_email_failed && !this.validation_errors.user_password_failed) {
         this.show_error = false;
-        this.err_msg = ""; //this.postData()
-
+        this.err_msg = "";
         this.$store.dispatch({
           type: 'do_login',
           payload: this.formData
@@ -2340,7 +2339,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      //articles: [],
       country_code: null,
       topic: null,
       logged_in: null,
@@ -2363,7 +2361,6 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     load_articles: function load_articles() {
       this.loading = true;
-      console.log(this.loading);
       var url = '/load-news/' + this.country_code + '/' + this.topic;
       this.$store.dispatch({
         type: 'load_articles',
@@ -2372,7 +2369,7 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = false;
     },
     chosen_region: function chosen_region(chosen_country_code) {
-      //this.articles = []; //clear previous articles in case user wants to change the region
+      //clear previous articles in case user wants to change the region
       this.$store.dispatch({
         type: 'clear_articles'
       });
