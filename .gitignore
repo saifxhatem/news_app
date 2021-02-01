@@ -11,3 +11,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+redis-stable-tar.gz
+redis-stable
+redis-stable.tar.gz
