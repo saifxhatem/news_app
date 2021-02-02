@@ -38,9 +38,7 @@ class UserID extends Filter
      */
     public function options(Request $request)
     {
-        //$options = new Collection([]);
         $users = User::orderBy('id')->pluck('id', 'email');
-        Log::info("Users object: ", array($users)) ;
         return $users;
     }
 }

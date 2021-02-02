@@ -15,3 +15,5 @@ redis-stable-tar.gz
 redis-stable
 redis-stable.tar.gz
 nova
+dump.rdb
+dump.rdb
