@@ -31,9 +31,9 @@ const routes = [
     { name: 'news', path: '/news', component: News},
     { name: 'logout', path: '/logout', component: Logout},
     { name: 'favorites', path: '/favorites', component: Favorites},
-    
 
-  
+
+
 ]
 
 const router = new VueRouter({

@@ -6,7 +6,6 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\FavoriteController;
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
