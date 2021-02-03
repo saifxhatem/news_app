@@ -7,6 +7,9 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\BelongsTo;
+use App\Nova\Filters\BeforeDateFilter;
+use App\Nova\Filters\AfterDateFilter;
+use App\Nova\Filters\UserIDFilter;
 
 
 
@@ -121,9 +124,9 @@ class Favorite extends Resource
     public function filters(Request $request)
     {
         return [
-            new Filters\UserIDFilter, 
-            new Filters\BeforeDateFilter,
-            new Filters\AfterDateFilter,
+            new UserIDFilter,
+            new BeforeDateFilter,
+            new AfterDateFilter,
         ];
     }
 
