@@ -20,7 +20,7 @@
     <div id= "app">
     <center>
         <div id="default" style="">
-            <router-link to="/">Dashboard</router-link>
+        <router-link to="/">Home</router-link>
             <router-link to="/news">News</router-link>
         </div>
         <div v-if="$session.exists()"> <!--  If user is logged in -->

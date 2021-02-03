@@ -8,7 +8,7 @@ use Laravel\Nova\Filters\Filter;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
-class UserID extends Filter
+class UserIDFilter extends Filter
 {
     /**
      * The filter's component.

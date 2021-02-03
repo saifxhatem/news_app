@@ -120,7 +120,11 @@ class Favorite extends Resource
      */
     public function filters(Request $request)
     {
-        return [new Filters\UserID, ];
+        return [
+            new Filters\UserIDFilter, 
+            new Filters\BeforeDateFilter,
+            new Filters\AfterDateFilter,
+        ];
     }
 
     /**
