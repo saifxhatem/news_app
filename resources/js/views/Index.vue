@@ -2,6 +2,7 @@
     <div>
         <br/><br/>
         <h2><center>{{greet_message}}</center></h2>
+        
     </div>
 
 </template>

@@ -72,11 +72,17 @@
 export default {
     data: function() {
         return {
-            articles: [],
             country_code: null,
             topic: null,
             logged_in: null,
             loading: false
+        }
+    },
+    computed: {
+        articles () {
+            if (this.$store.state && this.$store.state.news && this.$store.state.news.articles)
+                return this.$store.state.news.articles;
+            
         }
     },
     mounted() {
@@ -92,20 +98,17 @@ export default {
         load_articles: function() {
             this.loading = true;
             let url = '/load-news/' + this.country_code + '/' + this.topic;
-            axios.get(url)
-                .then((response) => {
-                    //check existence of data before assigning
-                    if (response.data){
-                        //api call successful, assign data
-                        this.loading = false;
-                        this.articles = response.data;
-                    }
+            this.$store.dispatch({
+                    type: 'load_articles',
+                    payload: url
                 })
-                .catch(function(error) {});
-
+            this.loading = false;
         },
         chosen_region: function(chosen_country_code) {
-            this.articles = []; //clear previous articles in case user wants to change the region
+            //clear previous articles in case user wants to change the region
+            this.$store.dispatch({
+                    type: 'clear_articles',
+                })
             this.topic = null; //clear previously selected topic
             if (chosen_country_code === 'eg') {
                 //assign user's chosen country
@@ -127,13 +130,11 @@ export default {
         },
         save_headline: function(article) {
             this.article_preprocess(article) //call our preprocessor
-            axios.post("/add-to-favorites", article)
-                .then((result) => {
-                    this.$set(article, 'saved', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
-
+            this.$store.dispatch({
+                    type: 'save_favorites',
+                    payload: article
                 })
-                .catch((error) => {
-                });
+            this.$set(article, 'saved', true) //this is used instead of a regular assignment (x = y) to trigger vue's reactivity
         },
         article_preprocess: function (article) { //we need to do some stuff to our article object before we can send it to our backend and save it
             article.user_id = this.$session.get('user_id') //apend user ID to our object

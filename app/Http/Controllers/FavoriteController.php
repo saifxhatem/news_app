@@ -61,7 +61,8 @@ class FavoriteController extends Controller
         
         if ($request->filter == 'all') {
                 $favorites = Favorite::where('user_id', $request->user_id)->get();
-                return $favorites;
+                if ($favorites->count() < 1) return response ("User has no favorites from " . $request->filter, 216);
+                    else return $favorites;
         }
         else {
             $favorites = Favorite::where('user_id', $request->user_id)
@@ -91,10 +92,7 @@ class FavoriteController extends Controller
         ]);
 
         $favorite_count = Favorite::where('user_id', $request->user_id)->count();
-        if ($favorite_count < 1) {
-            return response("User has no favorites", 215);
-        }
-        else return response("User has favorites", 200);
+        return $favorite_count;
     }
 
     
