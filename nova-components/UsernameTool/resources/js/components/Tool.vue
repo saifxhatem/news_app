@@ -35,7 +35,6 @@ export default {
                     // handle success
                     if (response.data)
                     {
-                        console.log(response.data)
                         this.user_object = response.data
                         
                     }
