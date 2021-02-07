@@ -10,6 +10,8 @@ use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Filters\BeforeDateFilter;
 use App\Nova\Filters\AfterDateFilter;
 use App\Nova\Filters\UserIDFilter;
+use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
+
 
 
 
@@ -149,7 +151,9 @@ class Favorite extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            new DownloadExcel,
+        ];
     }
 }
 
