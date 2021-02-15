@@ -27,7 +27,7 @@ class Favorite extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function favoritestate()
+    public function favoriteState()
     {
         //define relationship of user to favorites
         return $this->hasOne(FavoriteState::class);
