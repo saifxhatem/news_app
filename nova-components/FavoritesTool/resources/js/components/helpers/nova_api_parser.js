@@ -18,17 +18,4 @@ export default class NovaApiParser {
             
             return temp_array
     }
-    parse_using_foreach(api_response)
-    {
-        let temp_array = []
-        let final_array = []
-        temp_array = api_response.data.resources
-        temp_array.forEach(function(favorite, index) {
-            console.log(favorite)
-            
-        })
-        
-    }
-  }
-
-
+}
