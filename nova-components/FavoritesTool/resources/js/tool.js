@@ -46,8 +46,7 @@ Nova.booting((Vue, router, store) => {
         let filters = []
         filters.push({
           class: "App\\Nova\\Filters\\UserIDFilter",
-          // value: getters.get_user_id
-          value: 187
+          value: getters.get_user_id
         })
         filters.push({
           class: "App\\Nova\\Filters\\BeforeDateFilter",
