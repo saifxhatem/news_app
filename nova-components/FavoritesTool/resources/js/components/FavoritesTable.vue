@@ -1,6 +1,9 @@
 <template>
     <div>
         <heading class="mb-6">Favorites Tool</heading>
+        <div class="alert" v-if="favorites.length < 1">
+            This user has no favorites!
+        </div>
         <table id="favorites">
             <tr>
                 <th>ID</th>
@@ -41,7 +44,6 @@ export default {
         return {
             selected_state: []
         }
-
     },
     computed: {
         favorites() {
@@ -71,61 +73,5 @@ export default {
 </script>
 
 <style>
-/* Scoped Styles */
-
-#favorites {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#favorites td,
-#favorites th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#favorites tr:hover {
-    background-color: #ddd;
-}
-
-#favorites th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-
-.button-posted {
-    background-color: #4CAF50;
-    /* Green */
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-.button-not-posted {
-    background-color: #dd101a;
-    /* Red */
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-.button4 {
-    border-radius: 12px;
-}
+@import './../css/favorites_table.css';
 </style>

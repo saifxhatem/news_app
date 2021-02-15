@@ -68,25 +68,34 @@ Nova.booting((Vue, router, store) => {
 
         })
       },
-      toggle_posted ({commit, state, dispatch}, payload)
+      toggle_posted ({commit, state, dispatch, getters}, payload)
       {
-        Nova.request().post('/toggle-posted', {
-          favorite_id: payload.favorite_id,
-          selected_state: payload.selected_state
-        })
-        .then((response) => {
-          // handle success
-          if(response.status === 200) {
-            Nova.store.dispatch({
-                type: 'load_favorites',
-              })
-              //this.selected_state = null
+        let state_exists = false
+        for (let element of state.posted_states){
+          if (element.id === payload.selected_state){
+            state_exists = true;
+            break;
           }
-        })
-        .catch(function(error) {
-          // handle error
-          console.log(error);
-        })
+        }
+        if (state_exists && payload.favorite_id) {
+          Nova.request().post('/toggle-posted', {
+            favorite_id: payload.favorite_id,
+            selected_state: payload.selected_state
+          })
+          .then((response) => {
+            // handle success
+            if(response.status === 200) {
+              Nova.store.dispatch({
+                  type: 'load_favorites',
+                })
+            }
+          })
+          .catch(function(error) {
+            // handle error
+            console.log(error);
+          })
+        }
+        else console.log("Invalid state")
       },
       load_posted_states ({commit, state})
       {
@@ -106,6 +115,9 @@ Nova.booting((Vue, router, store) => {
     getters: {
       get_user_id: state => {
         return state.user_id
+      },
+      get_posted_states: state => {
+        return state.posted_states
       }
     }
   })
