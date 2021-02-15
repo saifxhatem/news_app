@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Favorite;
+use App\Models\FavoriteState;
 use App\Rules\FilterRules;
 
 
@@ -40,6 +41,7 @@ class FavoriteController extends Controller
         $favorite->urlToImage = $request->urlToImage;
         $favorite->category = $request->category;
         $favorite->country = $request->country;
+        $favorite->posted_status = 1; //default state (not_posted)
         $favorite->save();
         return response("New favorite successfully added", 200);
     }
@@ -86,7 +88,7 @@ class FavoriteController extends Controller
         return response("Headline removed successfully", 200);   
     }
 
-    public function count_favorites(request $request){
+    public function count_favorites(Request $request){
         $validated = $request->validate([
             'user_id' => 'required|exists:App\Models\User,id',
         ]);
@@ -94,6 +96,20 @@ class FavoriteController extends Controller
         $favorite_count = Favorite::where('user_id', $request->user_id)->count();
         return $favorite_count;
     }
+    
+    public function toggle_posted(Request $request){
+        $favorite = Favorite::where('id', '=', $request->favorite_id)->first();
+        $favorite->posted_status = $request->selected_state;
+        $favorite->save();
+        return response("All good", 200);
+        
+    }
 
+    public function get_posted_states(Request $request){
+        $states = FavoriteState::all();
+        return $states;
+        //need to make sure favorite does in fact belong to the user before he can toggle posted status
+        
+    }
     
 }

@@ -30,6 +30,7 @@ class FavoriteFactory extends Factory
             'urlToImage' => 'http://fake_url.io',
             'category' => 'business',
             'country' => 'eg',
+            'posted_status' => 1,
         ];
     }
 }

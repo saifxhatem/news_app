@@ -19,11 +19,17 @@ class Favorite extends Model
         'urlToImage',
         'category',
         'country',
+        'posted_status'
         
     ];
     //define relationship of favorites to user
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function favoritestate()
+    {
+        //define relationship of user to favorites
+        return $this->hasOne(FavoriteState::class);
     }
 }

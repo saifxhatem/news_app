@@ -7,6 +7,7 @@ use Laravel\Nova\Cards\Help;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 use Shatem\UsernameTool\UsernameTool;
+use Shatem\FavoritesTool\FavoritesTool;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -79,7 +80,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
-            new UsernameTool
+            new UsernameTool,
+            new FavoritesTool
         ];
     }
 

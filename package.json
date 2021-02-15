@@ -9,7 +9,9 @@
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "build-username-tool": "cd nova-components/UsernameTool && npm run dev",
-        "build-username-tool-prod": "cd nova-components/UsernameTool && npm run prod"
+        "build-username-tool-prod": "cd nova-components/UsernameTool && npm run prod",
+        "build-favorites-tool": "cd nova-components/FavoritesTool && npm run dev",
+        "build-favorites-tool-prod": "cd nova-components/FavoritesTool && npm run prod"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.2.1",
