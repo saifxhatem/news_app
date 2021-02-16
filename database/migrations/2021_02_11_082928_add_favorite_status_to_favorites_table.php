@@ -15,8 +15,8 @@ class AddFavoriteStatusToFavoritesTable extends Migration
     {
         Schema::table('favorites', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('posted_status');
-            $table->foreign('posted_status')->references('id')->on('favorite_status');
+            $table->unsignedBigInteger('favorite_status');
+            $table->foreign('favorite_status')->references('id')->on('favorite_status');
         });
     }
 
@@ -29,7 +29,7 @@ class AddFavoriteStatusToFavoritesTable extends Migration
     {
         Schema::table('favorites', function (Blueprint $table) {
             //
-            $table->dropForeign(['posted_status']);
+            $table->dropForeign(['favorite_status']);
         });
     }
 }

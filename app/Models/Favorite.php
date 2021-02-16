@@ -19,7 +19,7 @@ class Favorite extends Model
         'urlToImage',
         'category',
         'country',
-        'posted_status'
+        'favorite_status'
         
     ];
     //define relationship of favorites to user

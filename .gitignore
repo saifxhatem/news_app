@@ -16,3 +16,4 @@ redis-stable
 redis-stable.tar.gz
 nova
 dump.rdb
+database/migrations/2021_02_16_142516_rename_posted_status_column.php

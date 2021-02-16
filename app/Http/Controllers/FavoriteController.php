@@ -27,11 +27,15 @@ class FavoriteController extends Controller
             'country' => 'required|max:255',
             
           ]);
-
         /*
         input has been validated
         create new favorite and fill it with our request data
         */
+
+        //find state id that corresponds to "not_posted"
+
+        $state_id = FavoriteState::where('name', 'not_posted')->first();
+        if (!$state_id) return response("Could not find correct state id");
         $favorite = new Favorite;
         $favorite->user_id = $request->user_id;
         $favorite->source = $request->source['name'];
@@ -41,7 +45,7 @@ class FavoriteController extends Controller
         $favorite->urlToImage = $request->urlToImage;
         $favorite->category = $request->category;
         $favorite->country = $request->country;
-        $favorite->posted_status = 1; //default state (not_posted)
+        $favorite->favorite_status = $state_id['id'];
         $favorite->save();
         return response("New favorite successfully added", 200);
     }
@@ -98,8 +102,15 @@ class FavoriteController extends Controller
     }
     
     public function toggle_posted(Request $request){
+        $validated = $request->validate([
+            'favorite_id' => 'required',
+        ]);
+        //It might be better to just add an "Exists" rule in the validator and skip the next block entirely
         $favorite = Favorite::where('id', '=', $request->favorite_id)->first();
-        $favorite->posted_status = $request->selected_state;
+        if (!$favorite) {
+            return response("Favorite does not exist", 404);
+        }
+        $favorite->favorite_status = $request->selected_state;
         $favorite->save();
         return response("All good", 200);
         

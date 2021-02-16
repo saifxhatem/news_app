@@ -99,7 +99,7 @@ class Favorite extends Resource
             ->rules('required')
             ->hideFromIndex() ,
         
-        Number::make('Posted Status', 'posted_status')
+        Number::make('Favorite Status', 'favorite_status')
         ->rules('required'),
         
         
