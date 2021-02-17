@@ -31,9 +31,7 @@ const favorites_table_module = {
                 // handle success
                 if (response.data) {
                   commit('set_user_id', response.data)
-                  console.log("user_id committed")
                   resolve(response)
-                  //dispatch('load_favorites')
                 }
             })
           }, error => {
