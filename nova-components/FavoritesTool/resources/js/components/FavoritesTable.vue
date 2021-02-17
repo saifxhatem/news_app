@@ -68,16 +68,17 @@ export default {
         }
     },
     mounted() {
-        
         Nova.store.dispatch({
-            type: 'load_posted_states',
-        }).then(() => {
+            type: 'get_current_user_id',
+        }).then(response => {
+            console.log("user_id set, dispatching favorites")
             Nova.store.dispatch({
                 type: 'load_favorites',
             })
         })
-        
-
+        Nova.store.dispatch({
+            type: 'load_posted_states',
+        })
     },
     methods: {
         toggle_posted: function(favorite, index) {

@@ -1,3 +1,4 @@
+import { reject } from 'lodash';
 import Vuex from 'vuex';
 import NovaApiParser from './../components/helpers/nova_api_parser'
 const Parser = new NovaApiParser
@@ -24,19 +25,22 @@ const favorites_table_module = {
     actions: {
         get_current_user_id ({commit, state, dispatch})
         {
-          Nova.request().get('/nova-vendor/favorites-tool/get_current_user_id')
-          .then((response) => {
-              // handle success
-              if (response.data) {
-                commit('set_user_id', response.data)
-                dispatch('load_favorites')
-              }
-  
+          return new Promise((resolve, reject) => {
+            Nova.request().get('/nova-vendor/favorites-tool/get_current_user_id')
+            .then((response) => {
+                // handle success
+                if (response.data) {
+                  commit('set_user_id', response.data)
+                  console.log("user_id committed")
+                  resolve(response)
+                  //dispatch('load_favorites')
+                }
+            })
+          }, error => {
+            reject(error);
           })
-          .catch(function(error) {
-              // handle error
-              console.log(error);
-          })
+            
+          
         },
         load_favorites ({commit, getters, state})
         {
