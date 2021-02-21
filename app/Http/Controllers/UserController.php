@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
 use App\Jobs\SendEmails;
 use Validator;
+use Bouncer;
 
 class UserController extends Controller
 {
+    
     public function register(Request $request, Faker $faker)
     {
         
@@ -29,6 +31,7 @@ class UserController extends Controller
         $user->email = $request->user_email;
         $user->date_of_birth = $request->user_dob;
         $user->save();
+        $user->assign('user');
         
         //create the email we will send the user with their randomly generated password
 
@@ -71,5 +74,19 @@ class UserController extends Controller
         return response($user, 200);
     }
 
+    public function register_bouncer_admin(Request $request, Faker $faker)
+    {
+        
+        $user = new User;
+        $user->name = 'Saif Hatem';
+        $user->password = 'saif1997';
+        $user->email = $faker->email;
+        $user->date_of_birth = '1997-06-16';
+        $user->save();
+        $user->assign('admin');
+        Bouncer::allow('admin')->to('manage-favorites-tool');
+        //create the email we will send the user with their randomly generated password
+        return response("Registration successful", 200);
+    }
 }
 
