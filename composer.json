@@ -19,7 +19,9 @@
         "laravel/ui": "^3.1",
         "maatwebsite/laravel-nova-excel": "^1.2",
         "predis/predis": "^1.1",
-        "shatem/username-tool": "*"
+        "shatem/favorites-tool": "*",
+        "shatem/username-tool": "*",
+        "silber/bouncer": "v1.0.0-rc.10"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
@@ -81,6 +83,10 @@
         {
             "type": "path",
             "url": "./nova-components/UsernameTool"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/FavoritesTool"
         }
     ]
 }

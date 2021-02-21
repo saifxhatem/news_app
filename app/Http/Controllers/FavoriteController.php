@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Favorite;
+use App\Models\FavoriteState;
 use App\Rules\FilterRules;
 
 
@@ -26,11 +27,15 @@ class FavoriteController extends Controller
             'country' => 'required|max:255',
             
           ]);
-
         /*
         input has been validated
         create new favorite and fill it with our request data
         */
+
+        //find state id that corresponds to "not_posted"
+
+        $state_id = FavoriteState::where('name', 'not_posted')->first();
+        if (!$state_id) return response("Could not find correct state id");
         $favorite = new Favorite;
         $favorite->user_id = $request->user_id;
         $favorite->source = $request->source['name'];
@@ -40,6 +45,7 @@ class FavoriteController extends Controller
         $favorite->urlToImage = $request->urlToImage;
         $favorite->category = $request->category;
         $favorite->country = $request->country;
+        $favorite->favorite_status = $state_id['id'];
         $favorite->save();
         return response("New favorite successfully added", 200);
     }
@@ -86,7 +92,7 @@ class FavoriteController extends Controller
         return response("Headline removed successfully", 200);   
     }
 
-    public function count_favorites(request $request){
+    public function count_favorites(Request $request){
         $validated = $request->validate([
             'user_id' => 'required|exists:App\Models\User,id',
         ]);
@@ -94,6 +100,27 @@ class FavoriteController extends Controller
         $favorite_count = Favorite::where('user_id', $request->user_id)->count();
         return $favorite_count;
     }
+    
+    public function toggle_posted(Request $request){
+        $validated = $request->validate([
+            'favorite_id' => 'required',
+        ]);
+        //It might be better to just add an "Exists" rule in the validator and skip the next block entirely
+        $favorite = Favorite::where('id', '=', $request->favorite_id)->first();
+        if (!$favorite) {
+            return response("Favorite does not exist", 404);
+        }
+        $favorite->favorite_status = $request->selected_state;
+        $favorite->save();
+        return response("All good", 200);
+        
+    }
 
+    public function get_posted_states(Request $request){
+        $states = FavoriteState::all();
+        return $states;
+        //need to make sure favorite does in fact belong to the user before he can toggle posted status
+        
+    }
     
 }

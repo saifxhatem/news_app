@@ -45,6 +45,7 @@ class LoadFavorites extends TestCase
             'urlToImage' => $favorite->urlToImage,
             'category' => $favorite->category,
             'country' => $favorite->country,
+            'posted_status' => 1,
             'source' => ['name' => $favorite->source]
             ]);
         
@@ -77,6 +78,7 @@ class LoadFavorites extends TestCase
             'urlToImage' => $favorite->urlToImage,
             'category' => $favorite->category,
             'country' => $favorite->country,
+            'posted_status' => 1,
             'source' => ['name' => $favorite->source]
             ]);
         

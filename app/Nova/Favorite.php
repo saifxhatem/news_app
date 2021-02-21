@@ -3,6 +3,8 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -72,13 +74,11 @@ class Favorite extends Resource
         DateTime::make('Created At', 'created_at')
             ->sortable()
             ->rules('required')
-            ->hideFromIndex()
             ->hideWhenCreating() ,
 
         DateTime::make('Updated At', 'updated_at')
             ->sortable()
             ->rules('required')
-            ->hideFromIndex() 
             ->hideWhenCreating(),
 
         Text::make('Article Description', 'description')
@@ -98,6 +98,9 @@ class Favorite extends Resource
         Text::make('Photo from Article', 'urlToImage')
             ->rules('required')
             ->hideFromIndex() ,
+        
+        Number::make('Favorite Status', 'favorite_status')
+        ->rules('required'),
         
         
         ];

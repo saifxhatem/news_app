@@ -44,6 +44,7 @@ class AddFavorites extends TestCase
             'urlToImage' => $favorite->urlToImage,
             'category' => $favorite->category,
             'country' => $favorite->country,
+            'posted_status' => 1,
             'source' => ['name' => $favorite->source]
             ]);
         
@@ -69,6 +70,7 @@ class AddFavorites extends TestCase
             'urlToImage' => '',
             'category' => '',
             'country' => '',
+            'posted_status' => '',
             'source' => ['name' => '']
             ]);
         $this->assertEquals(302, $response->getStatusCode());

@@ -7,6 +7,8 @@ use Laravel\Nova\Cards\Help;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 use Shatem\UsernameTool\UsernameTool;
+use Shatem\FavoritesTool\FavoritesTool;
+use Bouncer;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -79,7 +81,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
-            new UsernameTool
+            new UsernameTool,
+            (new FavoritesTool)->canSee(function ($request) {
+                $user = auth()->user();
+                //$role_check = Bouncer::is($user)->an('admin'); //according to docs checking roles is bad practice and you should check for abilities instead?
+                $role_check = Bouncer::can('manage-favorites-tool');
+
+                if ($role_check) return true;
+                else return false;
+            }),
         ];
     }
 

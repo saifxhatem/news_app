@@ -1,16 +1,15 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 
-
-class User extends Authenticatable
+class FavoriteState extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRolesAndAbilities;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,19 +21,16 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
-        'password',
-        'date_of_birth'
+        
     ];
-
+    protected $table = 'favorite_status';
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        
     ];
 
     /**
@@ -43,12 +39,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        
     ];
 
     public function favorite()
     {
         //define relationship of user to favorites
-        return $this->hasMany(Favorite::class);
+        return $this->belongsTo(Favorite::class);
     }
 }
